@@ -1,4 +1,17 @@
-import { Home, PieChart, Settings, User, CreditCard, Bell } from "lucide-react";
+
+import { 
+  Home, 
+  PieChart, 
+  Settings, 
+  User, 
+  CreditCard, 
+  Bell, 
+  DollarSign, 
+  FileText, 
+  LayoutDashboard, 
+  TrendingUp, 
+  Lock 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
@@ -6,6 +19,11 @@ const menuItems = [
   { icon: Home, label: "Dashboard", path: "/" },
   { icon: PieChart, label: "Analytics", path: "/analytics" },
   { icon: CreditCard, label: "Transactions", path: "/transactions" },
+  { icon: DollarSign, label: "Budget Management", path: "/budget-management" },
+  { icon: FileText, label: "Expense Reports", path: "/expense-reports" },
+  { icon: LayoutDashboard, label: "Financial Dashboards", path: "/financial-dashboards" },
+  { icon: TrendingUp, label: "Predictive Analytics", path: "/predictive-analytics" },
+  { icon: Lock, label: "Access Control", path: "/access-control" },
   { icon: Bell, label: "Notifications", path: "/notifications" },
   { icon: User, label: "Profile", path: "/profile" },
   { icon: Settings, label: "Settings", path: "/settings" },
@@ -21,7 +39,7 @@ const Sidebar = () => {
           <h2 className="text-2xl font-bold text-primary">Finance</h2>
         </div>
         
-        <nav className="flex-1 px-4">
+        <nav className="flex-1 px-4 overflow-y-auto">
           <ul className="space-y-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -51,7 +69,7 @@ const Sidebar = () => {
             <User className="h-8 w-8 rounded-full bg-accent p-1" />
             <div className="flex flex-col">
               <span className="text-sm font-medium">John Doe</span>
-              <span className="text-xs text-secondary">Premium User</span>
+              <span className="text-xs text-secondary">Finance Manager</span>
             </div>
           </div>
         </div>
