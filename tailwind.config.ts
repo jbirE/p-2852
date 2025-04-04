@@ -26,12 +26,12 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#2E2E38", // EY dark gray
+          DEFAULT: "#1A1A24", // EY dark gray/black
           foreground: "#FFFFFF",
         },
         secondary: {
           DEFAULT: "#FFE600", // EY yellow
-          foreground: "#2E2E38",
+          foreground: "#1A1A24",
         },
         muted: {
           DEFAULT: "#F0F0F0", // Light gray for backgrounds
@@ -39,11 +39,11 @@ export default {
         },
         accent: {
           DEFAULT: "#FFE600", // EY yellow as accent
-          foreground: "#2E2E38",
+          foreground: "#1A1A24",
         },
         card: {
           DEFAULT: "#FFFFFF",
-          foreground: "#2E2E38",
+          foreground: "#1A1A24",
         },
       },
       borderRadius: {

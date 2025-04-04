@@ -34,14 +34,24 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 bg-primary text-white border-r border-gray-700">
+    <div className="fixed left-0 top-0 h-full w-64 bg-[#1A1A24] text-white border-r border-gray-700">
       <div className="flex flex-col h-full">
         <div className="p-4 border-b border-gray-700">
           <div className="flex items-center">
-            <div className="h-6 w-6 mr-2 bg-secondary rounded-sm flex items-center justify-center">
-              <span className="font-bold text-primary-foreground text-sm">EY</span>
+            <div className="h-8 w-8 mr-3">
+              <svg width="32" height="32" viewBox="0 0 69 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#clip0_682_22287)">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M11.09 61.4H28.46V69.32H0.669983V34.9H20.37L24.98 42.82H11.1V48.5H23.66V55.72H11.1V61.4H11.09ZM46.94 34.9L41.04 46.13L35.16 34.9H23.64L35.77 55.72V69.32H46.17V55.72L58.3 34.9H46.94Z" fill="white"/>
+                  <path fillRule="evenodd" clipRule="evenodd" d="M68.67 12.81V0L0 24.83L68.67 12.81Z" fill="#FFE600"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_682_22287">
+                    <rect width="68.67" height="69.32" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
             </div>
-            <h2 className="text-xl font-bold text-white">ConnectSpace</h2>
+            <h2 className="text-xl font-bold text-white">Financial Resource Management Tool</h2>
           </div>
         </div>
         
