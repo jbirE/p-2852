@@ -2,9 +2,11 @@
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle, XCircle, Clock, Plus, Filter } from "lucide-react";
+import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import ExpenseReportForm, { ExpenseFormData } from "@/components/ExpenseReportForm";
+import { toast } from "sonner";
 
 // Sample expense reports data
 const expenseReportsData = [
@@ -74,7 +76,28 @@ const statusColors = {
 
 const ExpenseReports = () => {
   const [reports, setReports] = useState(expenseReportsData);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   
+  // Count by status
+  const approvedCount = reports.filter(r => r.status === 'approved').length;
+  const pendingCount = reports.filter(r => r.status === 'pending').length;
+  const rejectedCount = reports.filter(r => r.status === 'rejected').length;
+  
+  const handleAddExpenseReport = (data: ExpenseFormData) => {
+    const newReport = {
+      id: data.reportId,
+      submittedBy: data.submittedBy,
+      department: data.department,
+      amount: data.amount,
+      date: data.submissionDate,
+      status: data.status,
+      approver: data.status === 'pending' ? 'Pending' : 'System',
+      description: data.description
+    };
+    
+    setReports([newReport, ...reports]);
+  };
+
   return (
     <div className="space-y-8">
       <header className="flex justify-between items-center">
@@ -82,7 +105,7 @@ const ExpenseReports = () => {
           <h1 className="text-4xl font-bold text-primary">Expense Reports</h1>
           <p className="text-secondary-foreground">Manage expense reports and approval workflows</p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2" onClick={() => setIsFormOpen(true)}>
           <Plus className="h-4 w-4" />
           New Expense Report
         </Button>
@@ -96,7 +119,7 @@ const ExpenseReports = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Total Reports</p>
-              <h2 className="text-2xl font-bold">5</h2>
+              <h2 className="text-2xl font-bold">{reports.length}</h2>
             </div>
           </div>
         </Card>
@@ -108,7 +131,7 @@ const ExpenseReports = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Approved</p>
-              <h2 className="text-2xl font-bold">2</h2>
+              <h2 className="text-2xl font-bold">{approvedCount}</h2>
             </div>
           </div>
         </Card>
@@ -120,7 +143,7 @@ const ExpenseReports = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Pending</p>
-              <h2 className="text-2xl font-bold">2</h2>
+              <h2 className="text-2xl font-bold">{pendingCount}</h2>
             </div>
           </div>
         </Card>
@@ -132,7 +155,7 @@ const ExpenseReports = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Rejected</p>
-              <h2 className="text-2xl font-bold">1</h2>
+              <h2 className="text-2xl font-bold">{rejectedCount}</h2>
             </div>
           </div>
         </Card>
@@ -180,7 +203,9 @@ const ExpenseReports = () => {
                   </TableCell>
                   <TableCell>{report.approver}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">View</Button>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                      <Eye className="h-4 w-4" /> View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -188,6 +213,13 @@ const ExpenseReports = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Expense Report Form Modal */}
+      <ExpenseReportForm 
+        isOpen={isFormOpen} 
+        onClose={() => setIsFormOpen(false)} 
+        onSave={handleAddExpenseReport}
+      />
     </div>
   );
 };
