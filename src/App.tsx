@@ -14,6 +14,7 @@ import ExpenseReports from "./pages/ExpenseReports";
 import FinancialDashboards from "./pages/FinancialDashboards";
 import PredictiveAnalytics from "./pages/PredictiveAnalytics";
 import AccessControl from "./pages/AccessControl";
+import Projects from "./pages/Projects";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => (
                   <Route path="/financial-dashboards" element={<FinancialDashboards />} />
                   <Route path="/predictive-analytics" element={<PredictiveAnalytics />} />
                   <Route path="/access-control" element={<AccessControl />} />
+                  <Route path="/projects" element={<Projects />} />
                 </Routes>
               </div>
             </main>
