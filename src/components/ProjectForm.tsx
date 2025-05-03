@@ -91,11 +91,19 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     // Find responsible person name from ID
     const responsiblePerson = responsiblePersons.find(person => person.id === data.responsibleId);
+    
+    // Create projectData with all required properties explicitly assigned
     const projectData: ProjectFormData = {
-      ...data,
-      responsibleName: responsiblePerson?.name || data.responsibleName
+      name: data.name,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      budget: data.budget,
+      departmentId: data.departmentId,
+      responsibleId: data.responsibleId || "",
+      responsibleName: responsiblePerson?.name || ""
     };
     
+    // If we're editing an existing project, include its ID
     if (editData?.id) {
       projectData.id = editData.id;
     }
