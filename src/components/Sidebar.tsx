@@ -12,7 +12,8 @@ import {
   TrendingUp, 
   Lock,
   LogOut,
-  Calendar
+  Calendar,
+  Building
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
@@ -23,6 +24,7 @@ const menuItems = [
   { icon: CreditCard, label: "Transactions", path: "/transactions" },
   { icon: DollarSign, label: "Budget Management", path: "/budget-management" },
   { icon: Calendar, label: "Projects", path: "/projects" },
+  { icon: Building, label: "Departments", path: "/departments" },
   { icon: FileText, label: "Expense Reports", path: "/expense-reports" },
   { icon: LayoutDashboard, label: "Financial Dashboards", path: "/financial-dashboards" },
   { icon: TrendingUp, label: "Predictive Analytics", path: "/predictive-analytics" },
