@@ -58,7 +58,7 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
 
   const onSubmit = (data: DepartmentFormData) => {
     onSave(data);
-    form.reset();
+    onClose();
   };
 
   return (
@@ -89,7 +89,7 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Region</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select region" />

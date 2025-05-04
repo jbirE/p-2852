@@ -6,7 +6,7 @@ import { Plus, Pencil, Trash2, Building, MapPin } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import DepartmentForm from "@/components/DepartmentForm";
+import DepartmentForm, { DepartmentFormData } from "@/components/DepartmentForm";
 
 // Sample departments data
 const departmentsData = [
@@ -17,17 +17,22 @@ const departmentsData = [
   { id: 5, name: "IT", region: "West", budgetTotal: 100000, projectsCount: 6, employeesCount: 18 },
 ];
 
+interface Department extends DepartmentFormData {
+  projectsCount: number;
+  employeesCount: number;
+}
+
 const Departments = () => {
-  const [departments, setDepartments] = useState(departmentsData);
+  const [departments, setDepartments] = useState<Department[]>(departmentsData);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [currentDepartment, setCurrentDepartment] = useState<any>(undefined);
+  const [currentDepartment, setCurrentDepartment] = useState<Department | undefined>(undefined);
   
   const handleAddDepartment = () => {
     setCurrentDepartment(undefined);
     setIsFormOpen(true);
   };
 
-  const handleEditDepartment = (department: any) => {
+  const handleEditDepartment = (department: Department) => {
     setCurrentDepartment(department);
     setIsFormOpen(true);
   };
@@ -37,7 +42,7 @@ const Departments = () => {
     toast.success("Department deleted successfully");
   };
 
-  const handleSaveDepartment = (data: any) => {
+  const handleSaveDepartment = (data: DepartmentFormData) => {
     if (data.id) {
       // Update existing department
       setDepartments(departments.map(dept => 
@@ -46,15 +51,16 @@ const Departments = () => {
       toast.success("Department updated successfully");
     } else {
       // Add new department
-      const newId = Math.max(...departments.map(dept => dept.id)) + 1;
-      setDepartments([...departments, { 
+      const newId = Math.max(0, ...departments.map(dept => dept.id)) + 1;
+      const newDepartment: Department = { 
         id: newId, 
         name: data.name, 
         region: data.region, 
         budgetTotal: data.budgetTotal,
         projectsCount: 0,
         employeesCount: 0
-      }]);
+      };
+      setDepartments([...departments, newDepartment]);
       toast.success("Department added successfully");
     }
     setIsFormOpen(false);
