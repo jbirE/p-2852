@@ -19,59 +19,59 @@ import { toast } from "sonner";
 const initialRoles = [
   { 
     id: 1, 
-    name: "Admin", 
+    name: "Administrateur", 
     userCount: 3, 
-    description: "Full system access including user management", 
+    description: "Accès complet au système, y compris la gestion des utilisateurs", 
     permissions: ["read", "write", "approve", "configure", "manage_users"]
   },
   { 
     id: 2, 
-    name: "Finance Manager", 
+    name: "Gestionnaire Financier", 
     userCount: 7, 
-    description: "Manage all financial data and approve budgets", 
+    description: "Gérer toutes les données financières et approuver les budgets", 
     permissions: ["read", "write", "approve"]
   },
   { 
     id: 3, 
-    name: "Department Manager", 
+    name: "Chef de Département", 
     userCount: 12, 
-    description: "Manage budgets for their department", 
+    description: "Gérer les budgets de leur département", 
     permissions: ["read", "write", "approve_departmental"]
   },
   { 
     id: 4, 
-    name: "Employee", 
+    name: "Employé", 
     userCount: 45, 
-    description: "Submit expenses and view departmental data", 
+    description: "Soumettre des dépenses et consulter les données départementales", 
     permissions: ["read_limited", "write_limited"]
   },
   { 
     id: 5, 
-    name: "Auditor", 
+    name: "Auditeur", 
     userCount: 2, 
-    description: "View-only access to all financial data", 
+    description: "Accès en lecture seule à toutes les données financières", 
     permissions: ["read"]
   },
 ];
 
 // Sample users data
 const initialUsers = [
-  { id: 1, name: "John Smith", email: "john.smith@example.com", role: "Admin", status: "active", lastActive: "2023-10-23" },
-  { id: 2, name: "Emma Watson", email: "emma.watson@example.com", role: "Finance Manager", status: "active", lastActive: "2023-10-22" },
-  { id: 3, name: "James Brown", email: "james.brown@example.com", role: "Department Manager", status: "active", lastActive: "2023-10-21" },
-  { id: 4, name: "Sarah Johnson", email: "sarah.johnson@example.com", role: "Employee", status: "inactive", lastActive: "2023-10-15" },
-  { id: 5, name: "Michael Davis", email: "michael.davis@example.com", role: "Auditor", status: "active", lastActive: "2023-10-20" },
+  { id: 1, name: "John Smith", email: "john.smith@example.com", role: "Administrateur", status: "active", lastActive: "2023-10-23" },
+  { id: 2, name: "Emma Watson", email: "emma.watson@example.com", role: "Gestionnaire Financier", status: "active", lastActive: "2023-10-22" },
+  { id: 3, name: "James Brown", email: "james.brown@example.com", role: "Chef de Département", status: "active", lastActive: "2023-10-21" },
+  { id: 4, name: "Sarah Johnson", email: "sarah.johnson@example.com", role: "Employé", status: "inactive", lastActive: "2023-10-15" },
+  { id: 5, name: "Michael Davis", email: "michael.davis@example.com", role: "Auditeur", status: "active", lastActive: "2023-10-20" },
 ];
 
 const permissionLabels = {
-  read: "View Data",
-  read_limited: "View Limited Data",
-  write: "Edit Data",
-  write_limited: "Submit Expenses",
-  approve: "Approve All",
-  approve_departmental: "Approve Departmental",
-  configure: "Configure System",
-  manage_users: "Manage Users",
+  read: "Voir les Données",
+  read_limited: "Voir Données Limitées",
+  write: "Modifier les Données",
+  write_limited: "Soumettre des Dépenses",
+  approve: "Approuver Tout",
+  approve_departmental: "Approuver Départemental",
+  configure: "Configurer le Système",
+  manage_users: "Gérer les Utilisateurs",
 };
 
 const permissionColors = {
@@ -90,19 +90,24 @@ const statusColors = {
   inactive: "bg-gray-100 text-gray-800",
 };
 
+const statusLabels = {
+  active: "Actif",
+  inactive: "Inactif",
+};
+
 // Schemas for forms
 const roleFormSchema = z.object({
   id: z.number().optional(),
-  name: z.string().min(1, "Role name is required"),
-  description: z.string().min(1, "Description is required"),
-  permissions: z.array(z.string()).min(1, "At least one permission is required"),
+  name: z.string().min(1, "Le nom du rôle est requis"),
+  description: z.string().min(1, "La description est requise"),
+  permissions: z.array(z.string()).min(1, "Au moins une permission est requise"),
 });
 
 const userFormSchema = z.object({
   id: z.number().optional(),
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Valid email is required"),
-  role: z.string().min(1, "Role is required"),
+  name: z.string().min(1, "Le nom est requis"),
+  email: z.string().email("Un email valide est requis"),
+  role: z.string().min(1, "Le rôle est requis"),
   status: z.enum(["active", "inactive"]),
 });
 
@@ -165,7 +170,7 @@ const AccessControl = () => {
   
   const handleDeleteRole = (id: number) => {
     setRoles(roles.filter(role => role.id !== id));
-    toast.success("Role deleted successfully");
+    toast.success("Rôle supprimé avec succès");
   };
   
   const handleSaveRole = (data: RoleFormData) => {
@@ -174,7 +179,7 @@ const AccessControl = () => {
       setRoles(roles.map(role => 
         role.id === data.id ? { ...role, ...data } : role
       ));
-      toast.success("Role updated successfully");
+      toast.success("Rôle mis à jour avec succès");
     } else {
       // Add new role
       const newId = Math.max(0, ...roles.map(role => role.id)) + 1;
@@ -185,7 +190,7 @@ const AccessControl = () => {
         permissions: data.permissions,
         userCount: 0
       }]);
-      toast.success("Role added successfully");
+      toast.success("Rôle ajouté avec succès");
     }
     setIsRoleFormOpen(false);
   };
@@ -216,7 +221,7 @@ const AccessControl = () => {
   
   const handleDeleteUser = (id: number) => {
     setUsers(users.filter(user => user.id !== id));
-    toast.success("User deleted successfully");
+    toast.success("Utilisateur supprimé avec succès");
   };
   
   const handleSaveUser = (data: UserFormData) => {
@@ -227,7 +232,7 @@ const AccessControl = () => {
       setUsers(users.map(user => 
         user.id === data.id ? { ...user, ...data } : user
       ));
-      toast.success("User updated successfully");
+      toast.success("Utilisateur mis à jour avec succès");
     } else {
       // Add new user
       const newId = Math.max(0, ...users.map(user => user.id)) + 1;
@@ -245,7 +250,7 @@ const AccessControl = () => {
         role.name === data.role ? { ...role, userCount: role.userCount + 1 } : role
       ));
       
-      toast.success("User added successfully");
+      toast.success("Utilisateur ajouté avec succès");
     }
     setIsUserFormOpen(false);
   };
@@ -254,21 +259,21 @@ const AccessControl = () => {
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-primary">Access Control</h1>
-          <p className="text-secondary-foreground">Manage roles, permissions and user access</p>
+          <h1 className="text-4xl font-bold text-primary">Contrôle d'Accès</h1>
+          <p className="text-secondary-foreground">Gérer les rôles, permissions et accès utilisateurs</p>
         </div>
         <div className="flex items-center gap-4">
           <Button variant="outline" onClick={() => setTab('roles')} className={tab === 'roles' ? 'bg-primary text-white' : ''}>
             <Shield className="h-4 w-4 mr-2" />
-            Roles
+            Rôles
           </Button>
           <Button variant="outline" onClick={() => setTab('users')} className={tab === 'users' ? 'bg-primary text-white' : ''}>
             <Users className="h-4 w-4 mr-2" />
-            Users
+            Utilisateurs
           </Button>
           <Button className="flex items-center gap-2" onClick={tab === 'roles' ? handleAddRole : handleAddUser}>
             <Plus className="h-4 w-4" />
-            New {tab === 'roles' ? 'Role' : 'User'}
+            Nouveau {tab === 'roles' ? 'Rôle' : 'Utilisateur'}
           </Button>
         </div>
       </header>
@@ -280,7 +285,7 @@ const AccessControl = () => {
               <Shield className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Roles</p>
+              <p className="text-sm text-muted-foreground">Total Rôles</p>
               <h2 className="text-2xl font-bold">{roles.length}</h2>
             </div>
           </div>
@@ -292,7 +297,7 @@ const AccessControl = () => {
               <Users className="h-6 w-6 text-green-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Users</p>
+              <p className="text-sm text-muted-foreground">Total Utilisateurs</p>
               <h2 className="text-2xl font-bold">{users.length}</h2>
             </div>
           </div>
@@ -304,7 +309,7 @@ const AccessControl = () => {
               <Lock className="h-6 w-6 text-red-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Security Events</p>
+              <p className="text-sm text-muted-foreground">Événements de Sécurité</p>
               <h2 className="text-2xl font-bold">12</h2>
             </div>
           </div>
@@ -314,15 +319,15 @@ const AccessControl = () => {
       {tab === 'roles' && (
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Roles & Permissions</CardTitle>
+            <CardTitle>Rôles & Permissions</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Role Name</TableHead>
+                  <TableHead>Nom du Rôle</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Users</TableHead>
+                  <TableHead>Utilisateurs</TableHead>
                   <TableHead>Permissions</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -350,11 +355,11 @@ const AccessControl = () => {
                       <div className="flex justify-end space-x-2">
                         <Button variant="ghost" size="sm" onClick={() => handleEditRole(role)}>
                           <Pencil className="h-4 w-4 mr-2" />
-                          Edit
+                          Modifier
                         </Button>
                         <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDeleteRole(role.id)}>
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
+                          Supprimer
                         </Button>
                       </div>
                     </TableCell>
@@ -369,17 +374,17 @@ const AccessControl = () => {
       {tab === 'users' && (
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>System Users</CardTitle>
+            <CardTitle>Utilisateurs Système</CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
+                  <TableHead>Nom</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Last Active</TableHead>
+                  <TableHead>Rôle</TableHead>
+                  <TableHead>Statut</TableHead>
+                  <TableHead>Dernière Activité</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -394,7 +399,7 @@ const AccessControl = () => {
                         variant="outline" 
                         className={statusColors[user.status as keyof typeof statusColors]}
                       >
-                        {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                        {statusLabels[user.status as keyof typeof statusLabels]}
                       </Badge>
                     </TableCell>
                     <TableCell>{user.lastActive}</TableCell>
@@ -402,11 +407,11 @@ const AccessControl = () => {
                       <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" onClick={() => handleEditUser(user)}>
                           <Pencil className="h-4 w-4 mr-2" />
-                          Edit
+                          Modifier
                         </Button>
                         <Button variant="ghost" size="sm" className="text-red-500" onClick={() => handleDeleteUser(user.id)}>
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
+                          Supprimer
                         </Button>
                       </div>
                     </TableCell>
@@ -422,7 +427,7 @@ const AccessControl = () => {
       <Dialog open={isRoleFormOpen} onOpenChange={() => setIsRoleFormOpen(false)}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{currentRole ? "Edit Role" : "New Role"}</DialogTitle>
+            <DialogTitle>{currentRole ? "Modifier Rôle" : "Nouveau Rôle"}</DialogTitle>
           </DialogHeader>
           <Form {...roleForm}>
             <form onSubmit={roleForm.handleSubmit(handleSaveRole)} className="space-y-6">
@@ -431,9 +436,9 @@ const AccessControl = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role Name</FormLabel>
+                    <FormLabel>Nom du Rôle</FormLabel>
                     <FormControl>
-                      <Input placeholder="Admin" {...field} />
+                      <Input placeholder="Administrateur" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -447,7 +452,7 @@ const AccessControl = () => {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input placeholder="Role description" {...field} />
+                      <Input placeholder="Description du rôle" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -502,10 +507,10 @@ const AccessControl = () => {
 
               <DialogFooter>
                 <Button variant="outline" type="button" onClick={() => setIsRoleFormOpen(false)}>
-                  Cancel
+                  Annuler
                 </Button>
                 <Button type="submit">
-                  {currentRole ? "Update Role" : "Create Role"}
+                  {currentRole ? "Mettre à jour" : "Créer"}
                 </Button>
               </DialogFooter>
             </form>
@@ -517,7 +522,7 @@ const AccessControl = () => {
       <Dialog open={isUserFormOpen} onOpenChange={() => setIsUserFormOpen(false)}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{currentUser ? "Edit User" : "New User"}</DialogTitle>
+            <DialogTitle>{currentUser ? "Modifier Utilisateur" : "Nouvel Utilisateur"}</DialogTitle>
           </DialogHeader>
           <Form {...userForm}>
             <form onSubmit={userForm.handleSubmit(handleSaveUser)} className="space-y-6">
@@ -526,9 +531,9 @@ const AccessControl = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>Nom Complet</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="Jean Dupont" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -542,7 +547,7 @@ const AccessControl = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="john.doe@example.com" {...field} />
+                      <Input placeholder="jean.dupont@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -554,11 +559,11 @@ const AccessControl = () => {
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>Rôle</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
+                          <SelectValue placeholder="Sélectionner un rôle" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -577,16 +582,16 @@ const AccessControl = () => {
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
+                    <FormLabel>Statut</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
+                          <SelectValue placeholder="Sélectionner statut" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="active">Actif</SelectItem>
+                        <SelectItem value="inactive">Inactif</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -596,10 +601,10 @@ const AccessControl = () => {
 
               <DialogFooter>
                 <Button variant="outline" type="button" onClick={() => setIsUserFormOpen(false)}>
-                  Cancel
+                  Annuler
                 </Button>
                 <Button type="submit">
-                  {currentUser ? "Update User" : "Create User"}
+                  {currentUser ? "Mettre à jour" : "Créer"}
                 </Button>
               </DialogFooter>
             </form>

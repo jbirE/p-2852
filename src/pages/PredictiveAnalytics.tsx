@@ -20,31 +20,37 @@ import {
 // Sample data for predictive analytics
 const forecastData = [
   { month: "Jan", actual: 45000, predicted: 45000 },
-  { month: "Feb", actual: 52000, predicted: 51000 },
+  { month: "Fév", actual: 52000, predicted: 51000 },
   { month: "Mar", actual: 48000, predicted: 49000 },
-  { month: "Apr", actual: 61000, predicted: 58000 },
-  { month: "May", actual: 55000, predicted: 57000 },
-  { month: "Jun", actual: 67000, predicted: 66000 },
-  { month: "Jul", actual: 72000, predicted: 70000 },
-  { month: "Aug", actual: 70000, predicted: 74000 },
+  { month: "Avr", actual: 61000, predicted: 58000 },
+  { month: "Mai", actual: 55000, predicted: 57000 },
+  { month: "Juin", actual: 67000, predicted: 66000 },
+  { month: "Juil", actual: 72000, predicted: 70000 },
+  { month: "Août", actual: 70000, predicted: 74000 },
   { month: "Sep", actual: 81000, predicted: 78000 },
   { month: "Oct", actual: null, predicted: 82000 },
   { month: "Nov", actual: null, predicted: 85000 },
-  { month: "Dec", actual: null, predicted: 90000 },
+  { month: "Déc", actual: null, predicted: 90000 },
 ];
 
 const anomalyDetection = [
-  { id: 1, department: "IT", category: "Software Licenses", amount: 12000, typical: 5000, risk: "high" },
-  { id: 2, department: "Marketing", category: "Digital Advertising", amount: 3500, typical: 4000, risk: "low" },
-  { id: 3, department: "Sales", category: "Travel Expenses", amount: 7500, typical: 5000, risk: "medium" },
-  { id: 4, department: "R&D", category: "Equipment", amount: 15000, typical: 15500, risk: "low" },
-  { id: 5, department: "Operations", category: "Utilities", amount: 9800, typical: 6000, risk: "high" },
+  { id: 1, department: "IT", category: "Licences Logiciels", amount: 12000, typical: 5000, risk: "high" },
+  { id: 2, department: "Marketing", category: "Publicité Numérique", amount: 3500, typical: 4000, risk: "low" },
+  { id: 3, department: "Ventes", category: "Frais de Déplacement", amount: 7500, typical: 5000, risk: "medium" },
+  { id: 4, department: "R&D", category: "Équipement", amount: 15000, typical: 15500, risk: "low" },
+  { id: 5, department: "Opérations", category: "Services", amount: 9800, typical: 6000, risk: "high" },
 ];
 
 const riskColors = {
   high: "bg-red-100 text-red-800",
   medium: "bg-yellow-100 text-yellow-800",
   low: "bg-green-100 text-green-800",
+};
+
+const riskLabels = {
+  high: "Élevé",
+  medium: "Moyen",
+  low: "Faible",
 };
 
 const PredictiveAnalytics = () => {
@@ -54,23 +60,23 @@ const PredictiveAnalytics = () => {
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-primary">Predictive Analytics</h1>
-          <p className="text-secondary-foreground">Forecast financial trends and detect anomalies</p>
+          <h1 className="text-4xl font-bold text-primary">Analytique Prédictive</h1>
+          <p className="text-secondary-foreground">Prévisions des tendances financières et détection d'anomalies</p>
         </div>
         <div className="flex items-center gap-4">
           <Select defaultValue={analysisType} onValueChange={setAnalysisType}>
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Select analysis type" />
+              <SelectValue placeholder="Sélectionner le type d'analyse" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="forecast">Budget Forecasting</SelectItem>
-              <SelectItem value="anomalies">Anomaly Detection</SelectItem>
-              <SelectItem value="optimization">Budget Optimization</SelectItem>
+              <SelectItem value="forecast">Prévisions Budgétaires</SelectItem>
+              <SelectItem value="anomalies">Détection d'Anomalies</SelectItem>
+              <SelectItem value="optimization">Optimisation Budgétaire</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Export
+            Exporter
           </Button>
         </div>
       </header>
@@ -82,8 +88,8 @@ const PredictiveAnalytics = () => {
               <TrendingUp className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Forecast Accuracy</p>
-              <h2 className="text-2xl font-bold">94.2%</h2>
+              <p className="text-sm text-muted-foreground">Précision des Prévisions</p>
+              <h2 className="text-2xl font-bold">94,2%</h2>
             </div>
           </div>
         </Card>
@@ -94,7 +100,7 @@ const PredictiveAnalytics = () => {
               <Brain className="h-6 w-6 text-purple-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">AI Predictions</p>
+              <p className="text-sm text-muted-foreground">Prédictions IA</p>
               <h2 className="text-2xl font-bold">257</h2>
             </div>
           </div>
@@ -106,7 +112,7 @@ const PredictiveAnalytics = () => {
               <AlertTriangle className="h-6 w-6 text-red-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Detected Anomalies</p>
+              <p className="text-sm text-muted-foreground">Anomalies Détectées</p>
               <h2 className="text-2xl font-bold">5</h2>
             </div>
           </div>
@@ -116,7 +122,7 @@ const PredictiveAnalytics = () => {
       {analysisType === "forecast" && (
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Budget Forecast (Next 3 Months)</CardTitle>
+            <CardTitle>Prévisions Budgétaires (3 prochains mois)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[400px]">
@@ -125,16 +131,16 @@ const PredictiveAnalytics = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip formatter={(value) => `$${value?.toLocaleString() || 0}`} />
+                  <Tooltip formatter={(value) => `${value?.toLocaleString() || 0} DT`} />
                   <Legend />
-                  <ReferenceLine x="Sep" stroke="#888" label="Current" />
+                  <ReferenceLine x="Sep" stroke="#888" label="Actuel" />
                   <Line 
                     type="monotone" 
                     dataKey="actual" 
                     stroke="#0088FE" 
                     strokeWidth={2} 
                     dot={{ r: 5 }}
-                    name="Actual Expenses"
+                    name="Dépenses Réelles"
                   />
                   <Line 
                     type="monotone" 
@@ -143,7 +149,7 @@ const PredictiveAnalytics = () => {
                     strokeWidth={2} 
                     strokeDasharray="5 5"
                     dot={{ r: 4 }}
-                    name="Predicted Expenses"
+                    name="Dépenses Prévues"
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -155,22 +161,22 @@ const PredictiveAnalytics = () => {
       {analysisType === "anomalies" && (
         <Card className="glass-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Anomaly Detection</CardTitle>
+            <CardTitle>Détection d'Anomalies</CardTitle>
             <Button variant="outline" size="sm" className="flex items-center gap-2">
               <Search className="h-4 w-4" />
-              Analyze More
+              Analyser Plus
             </Button>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Department</TableHead>
-                  <TableHead>Expense Category</TableHead>
-                  <TableHead>Current Amount</TableHead>
-                  <TableHead>Typical Amount</TableHead>
-                  <TableHead>Difference</TableHead>
-                  <TableHead>Risk Level</TableHead>
+                  <TableHead>Département</TableHead>
+                  <TableHead>Catégorie de Dépense</TableHead>
+                  <TableHead>Montant Actuel</TableHead>
+                  <TableHead>Montant Typique</TableHead>
+                  <TableHead>Différence</TableHead>
+                  <TableHead>Niveau de Risque</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -183,18 +189,18 @@ const PredictiveAnalytics = () => {
                     <TableRow key={item.id}>
                       <TableCell>{item.department}</TableCell>
                       <TableCell>{item.category}</TableCell>
-                      <TableCell>${item.amount.toLocaleString()}</TableCell>
-                      <TableCell>${item.typical.toLocaleString()}</TableCell>
+                      <TableCell>{item.amount.toLocaleString()} DT</TableCell>
+                      <TableCell>{item.typical.toLocaleString()} DT</TableCell>
                       <TableCell className={difference > 0 ? 'text-red-500' : 'text-green-500'}>
                         {difference > 0 ? '+' : ''}{difference.toLocaleString()} ({percentDiff}%)
                       </TableCell>
                       <TableCell>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${riskColors[item.risk as keyof typeof riskColors]}`}>
-                          {item.risk.charAt(0).toUpperCase() + item.risk.slice(1)}
+                          {riskLabels[item.risk as keyof typeof riskLabels]}
                         </span>
                       </TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="sm">Investigate</Button>
+                        <Button variant="ghost" size="sm">Examiner</Button>
                       </TableCell>
                     </TableRow>
                   );
@@ -208,46 +214,46 @@ const PredictiveAnalytics = () => {
       {analysisType === "optimization" && (
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Budget Optimization Recommendations</CardTitle>
+            <CardTitle>Recommandations d'Optimisation Budgétaire</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
-                <h3 className="text-lg font-semibold text-blue-700 mb-2">IT Department</h3>
-                <p className="text-sm text-blue-600 mb-3">Based on historical data, we recommend optimizing the following:</p>
+                <h3 className="text-lg font-semibold text-blue-700 mb-2">Département IT</h3>
+                <p className="text-sm text-blue-600 mb-3">Basé sur les données historiques, nous recommandons d'optimiser les éléments suivants :</p>
                 <ul className="list-disc pl-5 space-y-1 text-blue-700">
-                  <li>Reduce software license costs by consolidating vendors ($2,500 potential savings)</li>
-                  <li>Optimize cloud infrastructure spending based on actual usage patterns ($3,800 potential savings)</li>
-                  <li>Review hardware refresh cycle to extend lifecycle where possible ($1,200 potential savings)</li>
+                  <li>Réduire les coûts de licences logicielles en consolidant les fournisseurs (économie potentielle de 2 500 DT)</li>
+                  <li>Optimiser les dépenses d'infrastructure cloud en fonction des schémas d'utilisation réels (économie potentielle de 3 800 DT)</li>
+                  <li>Revoir le cycle de renouvellement du matériel pour prolonger la durée de vie si possible (économie potentielle de 1 200 DT)</li>
                 </ul>
                 <div className="mt-3">
-                  <Button size="sm" variant="outline" className="bg-white">Apply Recommendations</Button>
+                  <Button size="sm" variant="outline" className="bg-white">Appliquer les Recommandations</Button>
                 </div>
               </div>
               
               <div className="p-4 border border-green-200 rounded-lg bg-green-50">
-                <h3 className="text-lg font-semibold text-green-700 mb-2">Marketing Department</h3>
-                <p className="text-sm text-green-600 mb-3">Based on ROI analysis, we recommend the following budget adjustments:</p>
+                <h3 className="text-lg font-semibold text-green-700 mb-2">Département Marketing</h3>
+                <p className="text-sm text-green-600 mb-3">Basé sur l'analyse ROI, nous recommandons les ajustements budgétaires suivants :</p>
                 <ul className="list-disc pl-5 space-y-1 text-green-700">
-                  <li>Increase digital advertising budget by 15% based on positive conversion rates</li>
-                  <li>Reduce print marketing budget by 30% and reallocate to social media campaigns</li>
-                  <li>Consolidate marketing analytics tools to reduce redundancy ($1,800 potential savings)</li>
+                  <li>Augmenter le budget de publicité numérique de 15% en fonction des taux de conversion positifs</li>
+                  <li>Réduire le budget marketing imprimé de 30% et réaffecter aux campagnes de médias sociaux</li>
+                  <li>Consolider les outils d'analyse marketing pour réduire la redondance (économie potentielle de 1 800 DT)</li>
                 </ul>
                 <div className="mt-3">
-                  <Button size="sm" variant="outline" className="bg-white">Apply Recommendations</Button>
+                  <Button size="sm" variant="outline" className="bg-white">Appliquer les Recommandations</Button>
                 </div>
               </div>
               
               <div className="p-4 border border-purple-200 rounded-lg bg-purple-50">
-                <h3 className="text-lg font-semibold text-purple-700 mb-2">Operations Department</h3>
-                <p className="text-sm text-purple-600 mb-3">Based on efficiency analysis, we recommend the following:</p>
+                <h3 className="text-lg font-semibold text-purple-700 mb-2">Département Opérations</h3>
+                <p className="text-sm text-purple-600 mb-3">Basé sur l'analyse d'efficacité, nous recommandons ce qui suit :</p>
                 <ul className="list-disc pl-5 space-y-1 text-purple-700">
-                  <li>Implement energy efficiency measures to reduce utility costs ($4,200 potential annual savings)</li>
-                  <li>Renegotiate supplier contracts based on volume analysis ($3,500 potential savings)</li>
-                  <li>Optimize inventory levels to reduce carrying costs ($2,100 potential savings)</li>
+                  <li>Mettre en œuvre des mesures d'efficacité énergétique pour réduire les coûts des services publics (économie annuelle potentielle de 4 200 DT)</li>
+                  <li>Renégocier les contrats fournisseurs sur la base d'une analyse de volume (économie potentielle de 3 500 DT)</li>
+                  <li>Optimiser les niveaux d'inventaire pour réduire les coûts de stockage (économie potentielle de 2 100 DT)</li>
                 </ul>
                 <div className="mt-3">
-                  <Button size="sm" variant="outline" className="bg-white">Apply Recommendations</Button>
+                  <Button size="sm" variant="outline" className="bg-white">Appliquer les Recommandations</Button>
                 </div>
               </div>
             </div>

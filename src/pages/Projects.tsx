@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, Trash2, Calendar } from "lucide-react";
@@ -20,16 +20,16 @@ import {
 // Demo data for projects
 const initialProjects = [
   { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, departmentName: "Marketing", responsibleId: "EMP-1234", responsibleName: "Amira Ben Salem" },
-  { id: 2, name: "System Migration", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, departmentName: "IT", responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
-  { id: 3, name: "Market Research", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, departmentName: "Sales", responsibleId: "EMP-9012", responsibleName: "Karim Dupont" },
+  { id: 2, name: "Migration Système", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, departmentName: "IT", responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
+  { id: 3, name: "Étude de Marché", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, departmentName: "Ventes", responsibleId: "EMP-9012", responsibleName: "Karim Dupont" },
 ];
 
 // Demo departments for dropdown selection
 const departments = [
   { id: 1, department: "Marketing", allocated: 50000 },
-  { id: 2, department: "Research & Development", allocated: 120000 },
-  { id: 3, department: "Operations", allocated: 80000 },
-  { id: 4, department: "Sales", allocated: 60000 },
+  { id: 2, department: "Recherche & Développement", allocated: 120000 },
+  { id: 3, department: "Opérations", allocated: 80000 },
+  { id: 4, department: "Ventes", allocated: 60000 },
   { id: 5, department: "IT", allocated: 100000 },
 ];
 
@@ -78,7 +78,7 @@ const Projects = () => {
   const handleDeleteProject = () => {
     if (projectToDelete) {
       setProjects(projects.filter(project => project.id !== projectToDelete));
-      toast.success("Project deleted successfully");
+      toast.success("Projet supprimé avec succès");
       setIsDeleteDialogOpen(false);
     }
   };
@@ -116,13 +116,13 @@ const Projects = () => {
         departmentId: formData.departmentId,
         departmentName,
         responsibleId: formData.responsibleId || "EMP-0000",
-        responsibleName: formData.responsibleName || "Not Assigned"
+        responsibleName: formData.responsibleName || "Non Assigné"
       }]);
     }
   };
   
   const formatDate = (date: Date | undefined) => {
-    if (!date) return "Not set";
+    if (!date) return "Non défini";
     return new Date(date).toLocaleDateString();
   };
 
@@ -130,29 +130,29 @@ const Projects = () => {
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-primary">Projects Management</h1>
-          <p className="text-secondary-foreground">Create and manage projects linked to department budgets</p>
+          <h1 className="text-4xl font-bold text-primary">Gestion des Projets</h1>
+          <p className="text-secondary-foreground">Créer et gérer les projets liés aux budgets départementaux</p>
         </div>
         <Button className="flex items-center gap-2" onClick={handleAddProject}>
           <Plus className="h-4 w-4" />
-          New Project
+          Nouveau Projet
         </Button>
       </header>
 
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Projects</CardTitle>
+          <CardTitle>Projets</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Project Name</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
+                <TableHead>Nom du Projet</TableHead>
+                <TableHead>Date de Début</TableHead>
+                <TableHead>Date de Fin</TableHead>
                 <TableHead>Budget</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Responsible</TableHead>
+                <TableHead>Département</TableHead>
+                <TableHead>Responsable</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -162,7 +162,7 @@ const Projects = () => {
                   <TableCell className="font-medium">{project.name}</TableCell>
                   <TableCell>{formatDate(project.startDate)}</TableCell>
                   <TableCell>{formatDate(project.endDate)}</TableCell>
-                  <TableCell>${project.budget.toLocaleString()}</TableCell>
+                  <TableCell>{project.budget.toLocaleString()} DT</TableCell>
                   <TableCell>{project.departmentName}</TableCell>
                   <TableCell>{project.responsibleName}</TableCell>
                   <TableCell className="text-right space-x-2">
@@ -193,14 +193,14 @@ const Projects = () => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the project and all related data.
+              Cette action ne peut pas être annulée. Cela supprimera définitivement le projet et toutes les données associées.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteProject} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteProject} className="bg-red-600 hover:bg-red-700">Supprimer</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
