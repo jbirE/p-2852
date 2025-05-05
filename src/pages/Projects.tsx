@@ -19,7 +19,7 @@ import {
 
 // Demo data for projects
 const initialProjects = [
-  { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, departmentName: "Marketing", responsibleId: "EMP-1234", responsibleName: "Amira Ben Salem" },
+  { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, departmentName: "Marketing", responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
   { id: 2, name: "Migration Système", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, departmentName: "IT", responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
   { id: 3, name: "Étude de Marché", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, departmentName: "Ventes", responsibleId: "EMP-9012", responsibleName: "Karim Dupont" },
 ];

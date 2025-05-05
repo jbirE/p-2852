@@ -10,9 +10,9 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 const formSchema = z.object({
-  department: z.string().min(1, "Department name is required"),
-  allocated: z.coerce.number().min(1, "Budget amount is required"),
-  projects: z.coerce.number().min(0, "Number of projects is required"),
+  department: z.string().min(1, "Nom du département requis"),
+  allocated: z.coerce.number().min(1, "Montant du budget requis"),
+  projects: z.coerce.number().min(0, "Nombre de projets requis"),
 });
 
 export type BudgetFormData = z.infer<typeof formSchema> & { id?: number };
@@ -56,7 +56,7 @@ const BudgetForm = ({ isOpen, onClose, onSave, editData }: BudgetFormProps) => {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const budgetData = editData?.id ? { ...data, id: editData.id } : data;
     onSave(budgetData);
-    toast.success(editData ? "Budget updated successfully" : "Budget added successfully");
+    toast.success(editData ? "Budget mis à jour avec succès" : "Budget ajouté avec succès");
     onClose();
   };
 
@@ -64,7 +64,7 @@ const BudgetForm = ({ isOpen, onClose, onSave, editData }: BudgetFormProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{editData ? "Edit Budget" : "Add New Budget"}</DialogTitle>
+          <DialogTitle>{editData ? "Modifier le Budget" : "Ajouter un Nouveau Budget"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -73,9 +73,9 @@ const BudgetForm = ({ isOpen, onClose, onSave, editData }: BudgetFormProps) => {
               name="department"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Department</FormLabel>
+                  <FormLabel>Département</FormLabel>
                   <FormControl>
-                    <Input placeholder="Department name" {...field} />
+                    <Input placeholder="Nom du département" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -86,7 +86,7 @@ const BudgetForm = ({ isOpen, onClose, onSave, editData }: BudgetFormProps) => {
               name="allocated"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Budget Amount</FormLabel>
+                  <FormLabel>Montant du Budget (DT)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>
@@ -99,7 +99,7 @@ const BudgetForm = ({ isOpen, onClose, onSave, editData }: BudgetFormProps) => {
               name="projects"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Number of Projects</FormLabel>
+                  <FormLabel>Nombre de Projets</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="0" {...field} />
                   </FormControl>
@@ -109,9 +109,9 @@ const BudgetForm = ({ isOpen, onClose, onSave, editData }: BudgetFormProps) => {
             />
             <DialogFooter>
               <Button variant="outline" type="button" onClick={onClose}>
-                Cancel
+                Annuler
               </Button>
-              <Button type="submit">Save</Button>
+              <Button type="submit">Enregistrer</Button>
             </DialogFooter>
           </form>
         </Form>

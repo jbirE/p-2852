@@ -23,13 +23,13 @@ import { toast } from "sonner";
 import { ProjectFormData } from "@/pages/Projects";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Project name is required"),
+  name: z.string().min(1, "Nom du projet requis"),
   startDate: z.date({
-    required_error: "Start date is required",
+    required_error: "Date de début requise",
   }),
   endDate: z.date().optional(),
-  budget: z.coerce.number().min(1, "Budget amount is required"),
-  departmentId: z.coerce.number().min(1, "Department is required"),
+  budget: z.coerce.number().min(1, "Montant du budget requis"),
+  departmentId: z.coerce.number().min(1, "Département requis"),
   responsibleId: z.string().optional(),
   responsibleName: z.string().optional(),
 });
@@ -43,9 +43,8 @@ interface ProjectFormProps {
 }
 
 const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: ProjectFormProps) => {
-  // Mock data for responsible persons (in real app would be fetched from API)
+  // Liste modifiée des responsables sans Amira Ben Salem
   const responsiblePersons = [
-    { id: "EMP-1234", name: "Amira Ben Salem" },
     { id: "EMP-5678", name: "Mohamed Nasri" },
     { id: "EMP-9012", name: "Karim Dupont" },
     { id: "EMP-3456", name: "Sarah Mansour" },
@@ -109,7 +108,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
     }
     
     onSave(projectData);
-    toast.success(editData ? "Project updated successfully" : "Project added successfully");
+    toast.success(editData ? "Projet mis à jour avec succès" : "Projet ajouté avec succès");
     onClose();
   };
   
@@ -123,7 +122,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>{editData ? "Edit Project" : "Add New Project"}</DialogTitle>
+          <DialogTitle>{editData ? "Modifier le Projet" : "Ajouter un Nouveau Projet"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -132,9 +131,9 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name</FormLabel>
+                  <FormLabel>Nom du Projet</FormLabel>
                   <FormControl>
-                    <Input placeholder="Project name" {...field} />
+                    <Input placeholder="Nom du projet" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -147,7 +146,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                 name="startDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Start Date</FormLabel>
+                    <FormLabel>Date de Début</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -161,7 +160,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                             {field.value ? (
                               format(field.value, "PPP")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Choisir une date</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -186,7 +185,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                 name="endDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>End Date (Optional)</FormLabel>
+                    <FormLabel>Date de Fin (Optionnel)</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -200,7 +199,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                             {field.value ? (
                               format(field.value, "PPP")
                             ) : (
-                              <span>Pick a date</span>
+                              <span>Choisir une date</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -228,7 +227,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                 name="budget"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Budget Amount</FormLabel>
+                    <FormLabel>Montant du Budget (DT)</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} />
                     </FormControl>
@@ -242,7 +241,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                 name="departmentId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Department</FormLabel>
+                    <FormLabel>Département</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(parseInt(value))}
                       value={field.value.toString()}
@@ -250,7 +249,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select department" />
+                          <SelectValue placeholder="Sélectionner un département" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -272,7 +271,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
               name="responsibleId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Responsible Person</FormLabel>
+                  <FormLabel>Responsable</FormLabel>
                   <Select
                     onValueChange={handleResponsibleChange}
                     value={field.value}
@@ -280,7 +279,7 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select responsible person" />
+                        <SelectValue placeholder="Sélectionner un responsable" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -298,9 +297,9 @@ const ProjectForm = ({ isOpen, onClose, onSave, editData, departments }: Project
 
             <DialogFooter>
               <Button variant="outline" type="button" onClick={onClose}>
-                Cancel
+                Annuler
               </Button>
-              <Button type="submit">Save</Button>
+              <Button type="submit">Enregistrer</Button>
             </DialogFooter>
           </form>
         </Form>

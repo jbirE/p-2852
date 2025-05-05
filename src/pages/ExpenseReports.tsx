@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,32 +20,32 @@ const expenseReportsData = [
     date: "2023-10-15", 
     status: "approved", 
     approver: "John Smith",
-    description: "Q4 Marketing Campaign Expenses",
+    description: "Dépenses Campagne Marketing Q4",
     category: "Marketing",
     projectId: "PRJ-001",
-    projectName: "Summer Campaign",
+    projectName: "Campagne d'Été",
     attachments: 2,
     approvalSteps: [
-      { step: 1, approver: "Team Lead", status: "approved", date: "2023-10-16" },
-      { step: 2, approver: "Department Manager", status: "approved", date: "2023-10-17" }
+      { step: 1, approver: "Chef d'Équipe", status: "approved", date: "2023-10-16" },
+      { step: 2, approver: "Responsable Département", status: "approved", date: "2023-10-17" }
     ]
   },
   { 
     id: "EXP-002", 
     submittedBy: "Bob Williams", 
-    department: "Sales", 
+    department: "Ventes", 
     amount: 1750, 
     date: "2023-10-18", 
     status: "pending", 
-    approver: "Pending",
-    description: "Client Meeting Travel Expenses",
+    approver: "En attente",
+    description: "Frais de Déplacement Client",
     category: "Transport",
     projectId: "PRJ-002",
-    projectName: "Client Acquisition Q4",
+    projectName: "Acquisition Client Q4",
     attachments: 3,
     approvalSteps: [
-      { step: 1, approver: "Team Lead", status: "approved", date: "2023-10-19" },
-      { step: 2, approver: "Department Manager", status: "pending", date: null }
+      { step: 1, approver: "Chef d'Équipe", status: "approved", date: "2023-10-19" },
+      { step: 2, approver: "Responsable Département", status: "pending", date: null }
     ]
   },
   { 
@@ -55,32 +56,32 @@ const expenseReportsData = [
     date: "2023-10-10", 
     status: "approved", 
     approver: "Jane Doe",
-    description: "Research Equipment Purchase",
-    category: "Equipment",
+    description: "Achat Équipement Recherche",
+    category: "Équipement",
     projectId: "PRJ-003",
-    projectName: "Product Innovation",
+    projectName: "Innovation Produit",
     attachments: 1,
     approvalSteps: [
-      { step: 1, approver: "Team Lead", status: "approved", date: "2023-10-11" },
-      { step: 2, approver: "Department Manager", status: "approved", date: "2023-10-12" }
+      { step: 1, approver: "Chef d'Équipe", status: "approved", date: "2023-10-11" },
+      { step: 2, approver: "Responsable Département", status: "approved", date: "2023-10-12" }
     ]
   },
   { 
     id: "EXP-004", 
     submittedBy: "Diana Brown", 
-    department: "Operations", 
+    department: "Opérations", 
     amount: 950, 
     date: "2023-10-20", 
     status: "rejected", 
     approver: "Michael Johnson",
-    description: "Office Supplies Restock",
-    category: "Office Supplies",
+    description: "Réapprovisionnement Fournitures",
+    category: "Fournitures",
     projectId: "PRJ-004",
-    projectName: "Office Management",
+    projectName: "Gestion Bureau",
     attachments: 1,
     approvalSteps: [
-      { step: 1, approver: "Team Lead", status: "approved", date: "2023-10-21" },
-      { step: 2, approver: "Department Manager", status: "rejected", date: "2023-10-22", reason: "Insufficient justification for premium supplies" }
+      { step: 1, approver: "Chef d'Équipe", status: "approved", date: "2023-10-21" },
+      { step: 2, approver: "Responsable Département", status: "rejected", date: "2023-10-22", reason: "Justification insuffisante pour les fournitures premium" }
     ]
   },
   { 
@@ -90,15 +91,15 @@ const expenseReportsData = [
     amount: 3300, 
     date: "2023-10-22", 
     status: "pending", 
-    approver: "Pending",
-    description: "Software License Renewal",
-    category: "Software",
+    approver: "En attente",
+    description: "Renouvellement Licence Logiciel",
+    category: "Logiciel",
     projectId: "PRJ-005",
-    projectName: "IT Infrastructure",
+    projectName: "Infrastructure IT",
     attachments: 2,
     approvalSteps: [
-      { step: 1, approver: "Team Lead", status: "approved", date: "2023-10-23" },
-      { step: 2, approver: "Department Manager", status: "pending", date: null }
+      { step: 1, approver: "Chef d'Équipe", status: "approved", date: "2023-10-23" },
+      { step: 2, approver: "Responsable Département", status: "pending", date: null }
     ]
   },
 ];
@@ -134,22 +135,22 @@ const ExpenseReports = () => {
       amount: data.amount,
       date: data.submissionDate,
       status: "pending",
-      approver: "Pending",
+      approver: "En attente",
       description: data.description,
       category: data.category,
       projectId: data.projectCode,
       projectName: data.projectName,
       attachments: 1,
       approvalSteps: [
-        { step: 1, approver: "Team Lead", status: "pending", date: null }
+        { step: 1, approver: "Chef d'Équipe", status: "pending", date: null }
       ]
     };
     
     setReports([newReport, ...reports]);
-    toast.success("Expense report submitted successfully");
+    toast.success("Rapport de dépense soumis avec succès");
     
     // Send email notification (simulated)
-    toast.info("Email notification sent to approvers");
+    toast.info("Notification envoyée aux approbateurs");
   };
 
   const viewApprovalWorkflow = (report: any) => {
@@ -173,14 +174,14 @@ const ExpenseReports = () => {
           ...report,
           approvalSteps: updatedSteps,
           status: allApproved ? 'approved' : 'pending',
-          approver: allApproved ? "System" : "Pending"
+          approver: allApproved ? "Système" : "En attente"
         };
       }
       return report;
     }));
     
-    toast.success(`Approval step ${step} completed`);
-    toast.info("Email notification sent to submitter");
+    toast.success(`Étape d'approbation ${step} complétée`);
+    toast.info("Notification envoyée au soumetteur");
   };
 
   const handleRejectReport = (reportId: string, step: number) => {
@@ -188,7 +189,7 @@ const ExpenseReports = () => {
       if (report.id === reportId) {
         const updatedSteps = report.approvalSteps.map((s: any) => 
           s.step === step 
-            ? { ...s, status: 'rejected', date: new Date().toISOString().split('T')[0], reason: "Rejected by approver" }
+            ? { ...s, status: 'rejected', date: new Date().toISOString().split('T')[0], reason: "Rejeté par l'approbateur" }
             : s
         );
         
@@ -196,30 +197,30 @@ const ExpenseReports = () => {
           ...report,
           approvalSteps: updatedSteps,
           status: 'rejected',
-          approver: "System"
+          approver: "Système"
         };
       }
       return report;
     }));
     
-    toast.error(`Report ${reportId} has been rejected`);
-    toast.info("Email notification sent to submitter");
+    toast.error(`Rapport ${reportId} a été rejeté`);
+    toast.info("Notification envoyée au soumetteur");
   };
 
   const sendReminderEmail = (reportId: string) => {
-    toast.success(`Reminder sent for report ${reportId}`);
+    toast.success(`Rappel envoyé pour le rapport ${reportId}`);
   };
 
   return (
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-primary">Expense Reports</h1>
-          <p className="text-secondary-foreground">Manage expense reports and approval workflows</p>
+          <h1 className="text-4xl font-bold text-primary">Rapports de Dépenses</h1>
+          <p className="text-secondary-foreground">Gérer les rapports de dépenses et les flux d'approbation</p>
         </div>
         <Button className="flex items-center gap-2" onClick={() => setIsFormOpen(true)}>
           <Plus className="h-4 w-4" />
-          New Expense Report
+          Nouveau Rapport de Dépense
         </Button>
       </header>
 
@@ -230,7 +231,7 @@ const ExpenseReports = () => {
               <FileText className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Reports</p>
+              <p className="text-sm text-muted-foreground">Total des Rapports</p>
               <h2 className="text-2xl font-bold">{reports.length}</h2>
             </div>
           </div>
@@ -242,7 +243,7 @@ const ExpenseReports = () => {
               <CheckCircle className="h-6 w-6 text-green-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Approved</p>
+              <p className="text-sm text-muted-foreground">Approuvés</p>
               <h2 className="text-2xl font-bold">{approvedCount}</h2>
             </div>
           </div>
@@ -254,7 +255,7 @@ const ExpenseReports = () => {
               <Clock className="h-6 w-6 text-yellow-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Pending</p>
+              <p className="text-sm text-muted-foreground">En Attente</p>
               <h2 className="text-2xl font-bold">{pendingCount}</h2>
             </div>
           </div>
@@ -266,7 +267,7 @@ const ExpenseReports = () => {
               <XCircle className="h-6 w-6 text-red-600" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Rejected</p>
+              <p className="text-sm text-muted-foreground">Rejetés</p>
               <h2 className="text-2xl font-bold">{rejectedCount}</h2>
             </div>
           </div>
@@ -275,25 +276,25 @@ const ExpenseReports = () => {
 
       <Card className="glass-card">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Expense Reports</CardTitle>
+          <CardTitle>Rapports de Dépenses</CardTitle>
           <Button variant="outline" size="sm" className="flex items-center gap-2">
             <Filter className="h-4 w-4" />
-            Filter
+            Filtrer
           </Button>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Report ID</TableHead>
+                <TableHead>ID Rapport</TableHead>
                 <TableHead>Description</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Submitted By</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Amount</TableHead>
+                <TableHead>Projet</TableHead>
+                <TableHead>Catégorie</TableHead>
+                <TableHead>Soumis Par</TableHead>
+                <TableHead>Département</TableHead>
+                <TableHead>Montant</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -308,13 +309,14 @@ const ExpenseReports = () => {
                   </TableCell>
                   <TableCell>{report.submittedBy}</TableCell>
                   <TableCell>{report.department}</TableCell>
-                  <TableCell>${report.amount.toLocaleString()}</TableCell>
+                  <TableCell>{report.amount.toLocaleString()} DT</TableCell>
                   <TableCell>{report.date}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={statusColors[report.status as keyof typeof statusColors]}>
                       <span className="flex items-center gap-1">
                         {statusIcons[report.status as keyof typeof statusIcons]}
-                        {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+                        {report.status === 'approved' ? 'Approuvé' : 
+                         report.status === 'rejected' ? 'Rejeté' : 'En Attente'}
                       </span>
                     </Badge>
                   </TableCell>
@@ -334,9 +336,9 @@ const ExpenseReports = () => {
                         </PopoverTrigger>
                         <PopoverContent className="w-56">
                           <div className="grid gap-2">
-                            <Button variant="ghost" size="sm" className="justify-start">View Details</Button>
-                            <Button variant="ghost" size="sm" className="justify-start">Download PDF</Button>
-                            <Button variant="ghost" size="sm" className="justify-start">Export to Accounting</Button>
+                            <Button variant="ghost" size="sm" className="justify-start">Voir les Détails</Button>
+                            <Button variant="ghost" size="sm" className="justify-start">Télécharger PDF</Button>
+                            <Button variant="ghost" size="sm" className="justify-start">Exporter vers Comptabilité</Button>
                           </div>
                         </PopoverContent>
                       </Popover>
@@ -361,24 +363,24 @@ const ExpenseReports = () => {
         <Dialog open={approvalModalOpen} onOpenChange={setApprovalModalOpen}>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Approval Workflow - {selectedReport.id}</DialogTitle>
+              <DialogTitle>Flux d'Approbation - {selectedReport.id}</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               <div className="space-y-2">
                 <p><strong>Description:</strong> {selectedReport.description}</p>
-                <p><strong>Project:</strong> {selectedReport.projectName}</p>
-                <p><strong>Amount:</strong> ${selectedReport.amount.toLocaleString()}</p>
-                <p><strong>Submitted By:</strong> {selectedReport.submittedBy}</p>
-                <p><strong>Department:</strong> {selectedReport.department}</p>
+                <p><strong>Projet:</strong> {selectedReport.projectName}</p>
+                <p><strong>Montant:</strong> {selectedReport.amount.toLocaleString()} DT</p>
+                <p><strong>Soumis Par:</strong> {selectedReport.submittedBy}</p>
+                <p><strong>Département:</strong> {selectedReport.department}</p>
               </div>
               
               <div className="border rounded-md">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Step</TableHead>
-                      <TableHead>Approver</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Étape</TableHead>
+                      <TableHead>Approbateur</TableHead>
+                      <TableHead>Statut</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -394,7 +396,8 @@ const ExpenseReports = () => {
                             step.status === 'rejected' ? 'bg-red-100 text-red-800' : 
                             'bg-yellow-100 text-yellow-800'
                           }>
-                            {step.status.charAt(0).toUpperCase() + step.status.slice(1)}
+                            {step.status === 'approved' ? 'Approuvé' : 
+                             step.status === 'rejected' ? 'Rejeté' : 'En Attente'}
                           </Badge>
                         </TableCell>
                         <TableCell>{step.date || '-'}</TableCell>
@@ -407,7 +410,7 @@ const ExpenseReports = () => {
                                 className="text-green-600 border-green-600 hover:bg-green-50"
                                 onClick={() => handleApproveReport(selectedReport.id, step.step)}
                               >
-                                Approve
+                                Approuver
                               </Button>
                               <Button 
                                 size="sm" 
@@ -415,7 +418,7 @@ const ExpenseReports = () => {
                                 className="text-red-600 border-red-600 hover:bg-red-50"
                                 onClick={() => handleRejectReport(selectedReport.id, step.step)}
                               >
-                                Reject
+                                Rejeter
                               </Button>
                             </div>
                           )}
@@ -430,7 +433,7 @@ const ExpenseReports = () => {
               </div>
               
               <DialogFooter>
-                <Button variant="outline" onClick={() => setApprovalModalOpen(false)}>Close</Button>
+                <Button variant="outline" onClick={() => setApprovalModalOpen(false)}>Fermer</Button>
               </DialogFooter>
             </div>
           </DialogContent>
