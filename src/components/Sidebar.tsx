@@ -19,19 +19,19 @@ import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
-  { icon: Home, label: "Dashboard", path: "/" },
-  { icon: PieChart, label: "Analytics", path: "/analytics" },
+  { icon: Home, label: "Tableau de bord", path: "/" },
+  { icon: PieChart, label: "Analytique", path: "/analytics" },
   { icon: CreditCard, label: "Transactions", path: "/transactions" },
-  { icon: DollarSign, label: "Budget Management", path: "/budget-management" },
-  { icon: Calendar, label: "Projects", path: "/projects" },
-  { icon: Building, label: "Departments", path: "/departments" },
-  { icon: FileText, label: "Expense Reports", path: "/expense-reports" },
-  { icon: LayoutDashboard, label: "Financial Dashboards", path: "/financial-dashboards" },
-  { icon: TrendingUp, label: "Predictive Analytics", path: "/predictive-analytics" },
-  { icon: Lock, label: "Access Control", path: "/access-control" },
+  { icon: DollarSign, label: "Gestion de Budget", path: "/budget-management" },
+  { icon: Calendar, label: "Projets", path: "/projects" },
+  { icon: Building, label: "Départements", path: "/departments" },
+  { icon: FileText, label: "Rapports de Dépenses", path: "/expense-reports" },
+  { icon: LayoutDashboard, label: "Tableaux Financiers", path: "/financial-dashboards" },
+  { icon: TrendingUp, label: "Analytique Prédictive", path: "/predictive-analytics" },
+  { icon: Lock, label: "Contrôle d'Accès", path: "/access-control" },
   { icon: Bell, label: "Notifications", path: "/notifications" },
-  { icon: User, label: "Profile", path: "/profile" },
-  { icon: Settings, label: "Settings", path: "/settings" },
+  { icon: User, label: "Profil", path: "/profile" },
+  { icon: Settings, label: "Paramètres", path: "/settings" },
 ];
 
 const Sidebar = () => {
@@ -55,7 +55,7 @@ const Sidebar = () => {
                 </defs>
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-white">Financial Resource Management Tool</h2>
+            <h2 className="text-xl font-bold text-white">BudgetFlow</h2>
           </div>
         </div>
         
@@ -87,7 +87,7 @@ const Sidebar = () => {
         <div className="p-4 border-t border-gray-700 mt-auto">
           <div className="flex items-center text-gray-300 hover:text-white hover:bg-gray-700 px-4 py-2 rounded-sm cursor-pointer">
             <LogOut className="h-4 w-4 mr-3" />
-            <span className="text-sm">Logout</span>
+            <span className="text-sm">Déconnexion</span>
           </div>
         </div>
       </div>

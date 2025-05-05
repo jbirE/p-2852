@@ -11,9 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const formSchema = z.object({
   id: z.number().optional(),
-  name: z.string().min(1, "Department name is required"),
-  region: z.string().min(1, "Region is required"),
-  budgetTotal: z.coerce.number().min(0, "Budget must be a positive number"),
+  name: z.string().min(1, "Le nom du département est requis"),
+  region: z.string().min(1, "La région est requise"),
+  budgetTotal: z.coerce.number().min(0, "Le budget doit être un nombre positif"),
 });
 
 export type DepartmentFormData = z.infer<typeof formSchema>;
@@ -25,7 +25,7 @@ interface DepartmentFormProps {
   editData?: DepartmentFormData;
 }
 
-const regionOptions = ["North", "South", "East", "West", "Central"];
+const regionOptions = ["Nord", "Sud", "Est", "Ouest", "Centre"];
 
 const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormProps) => {
   const form = useForm<DepartmentFormData>({
@@ -65,7 +65,7 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{editData ? "Edit Department" : "New Department"}</DialogTitle>
+          <DialogTitle>{editData ? "Modifier Département" : "Nouveau Département"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -74,7 +74,7 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Department Name</FormLabel>
+                  <FormLabel>Nom du Département</FormLabel>
                   <FormControl>
                     <Input placeholder="Marketing" {...field} />
                   </FormControl>
@@ -88,11 +88,11 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
               name="region"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Region</FormLabel>
+                  <FormLabel>Région</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select region" />
+                        <SelectValue placeholder="Sélectionner une région" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -111,7 +111,7 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
               name="budgetTotal"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Total Budget</FormLabel>
+                  <FormLabel>Budget Total (DT)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="100000" {...field} />
                   </FormControl>
@@ -122,10 +122,10 @@ const DepartmentForm = ({ isOpen, onClose, onSave, editData }: DepartmentFormPro
 
             <DialogFooter>
               <Button variant="outline" type="button" onClick={onClose}>
-                Cancel
+                Annuler
               </Button>
               <Button type="submit">
-                {editData ? "Update" : "Create"} Department
+                {editData ? "Mettre à jour" : "Créer"} Département
               </Button>
             </DialogFooter>
           </form>

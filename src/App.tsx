@@ -21,7 +21,7 @@ const queryClient = new QueryClient();
 
 const NavBar = () => (
   <div className="h-14 bg-[#1A1A24] border-b border-gray-700 flex items-center justify-between px-4 w-full">
-    <div className="font-medium text-white ml-64">Dashboard Admin</div>
+    <div className="font-medium text-white ml-64">Dashboard Financier</div>
     <div className="flex items-center gap-5">
       <div className="flex items-center gap-2">
         <Bell className="w-5 h-5 text-gray-300" />
@@ -29,15 +29,15 @@ const NavBar = () => (
       </div>
       <div className="flex items-center gap-2">
         <Globe className="w-5 h-5 text-gray-300" />
-        <span className="text-sm text-gray-300">English</span>
+        <span className="text-sm text-gray-300">Français</span>
       </div>
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-full bg-[#FFE600] flex items-center justify-center">
           <User className="w-5 h-5 text-[#1A1A24]" />
         </div>
         <div className="text-sm">
-          <div className="font-medium text-white">Mohamed Nasri</div>
-          <div className="text-xs text-gray-300">Administrator</div>
+          <div className="font-medium text-white">Emma Jbir</div>
+          <div className="text-xs text-gray-300">Financier</div>
         </div>
       </div>
     </div>

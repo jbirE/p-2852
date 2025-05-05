@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,12 +17,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-// Demo data for departments and budgets
+// Données de démonstration pour les départements et budgets
 const initialBudgets = [
   { id: 1, department: "Marketing", allocated: 50000, spent: 32000, remaining: 18000, projects: 4 },
-  { id: 2, department: "Research & Development", allocated: 120000, spent: 75000, remaining: 45000, projects: 3 },
-  { id: 3, department: "Operations", allocated: 80000, spent: 65000, remaining: 15000, projects: 5 },
-  { id: 4, department: "Sales", allocated: 60000, spent: 20000, remaining: 40000, projects: 2 },
+  { id: 2, department: "Recherche & Développement", allocated: 120000, spent: 75000, remaining: 45000, projects: 3 },
+  { id: 3, department: "Opérations", allocated: 80000, spent: 65000, remaining: 15000, projects: 5 },
+  { id: 4, department: "Ventes", allocated: 60000, spent: 20000, remaining: 40000, projects: 2 },
   { id: 5, department: "IT", allocated: 100000, spent: 90000, remaining: 10000, projects: 6 },
 ];
 
@@ -34,11 +33,11 @@ const BudgetManagement = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState<number | null>(null);
 
-  // Totals calculation
+  // Calcul des totaux
   const totalBudget = budgets.reduce((acc, curr) => acc + curr.allocated, 0);
   const totalSpent = budgets.reduce((acc, curr) => acc + curr.spent, 0);
   const totalRemaining = totalBudget - totalSpent;
-
+  
   const calculateRemainingBudget = (budget: { allocated: number, spent: number }) => {
     return budget.allocated - budget.spent;
   };
@@ -103,12 +102,12 @@ const BudgetManagement = () => {
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-primary">Budget Management</h1>
-          <p className="text-secondary-foreground">Allocate and track department budgets</p>
+          <h1 className="text-4xl font-bold text-primary">Gestion de Budget</h1>
+          <p className="text-secondary-foreground">Allouer et suivre les budgets des départements</p>
         </div>
         <Button className="flex items-center gap-2" onClick={handleAddBudget}>
           <Plus className="h-4 w-4" />
-          New Budget
+          Nouveau Budget
         </Button>
       </header>
 
@@ -116,8 +115,8 @@ const BudgetManagement = () => {
         <Card className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Budget</p>
-              <h2 className="text-2xl font-bold">${totalBudget.toLocaleString()}</h2>
+              <p className="text-sm text-muted-foreground">Budget Total</p>
+              <h2 className="text-2xl font-bold">{totalBudget.toLocaleString()} DT</h2>
             </div>
             <div className="p-2 bg-blue-100 rounded-full">
               <DollarSign className="h-4 w-4 text-blue-600" />
@@ -128,8 +127,8 @@ const BudgetManagement = () => {
         <Card className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Allocated</p>
-              <h2 className="text-2xl font-bold">${totalSpent.toLocaleString()}</h2>
+              <p className="text-sm text-muted-foreground">Alloué</p>
+              <h2 className="text-2xl font-bold">{totalSpent.toLocaleString()} DT</h2>
             </div>
             <div className="p-2 bg-green-100 rounded-full">
               <TrendingUp className="h-4 w-4 text-green-600" />
@@ -140,8 +139,8 @@ const BudgetManagement = () => {
         <Card className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Remaining</p>
-              <h2 className="text-2xl font-bold">${totalRemaining.toLocaleString()}</h2>
+              <p className="text-sm text-muted-foreground">Restant</p>
+              <h2 className="text-2xl font-bold">{totalRemaining.toLocaleString()} DT</h2>
             </div>
             <div className="p-2 bg-yellow-100 rounded-full">
               <TrendingDown className="h-4 w-4 text-yellow-600" />
@@ -152,7 +151,7 @@ const BudgetManagement = () => {
         <Card className="glass-card p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Alerts</p>
+              <p className="text-sm text-muted-foreground">Alertes</p>
               <h2 className="text-2xl font-bold">
                 {budgets.filter(budget => (budget.spent / budget.allocated) > 0.85).length}
               </h2>
@@ -166,19 +165,19 @@ const BudgetManagement = () => {
 
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Department Budgets</CardTitle>
+          <CardTitle>Budgets des Départements</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Department</TableHead>
-                <TableHead>Allocated Budget</TableHead>
-                <TableHead>Spent</TableHead>
-                <TableHead>Remaining</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Projects</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Département</TableHead>
+                <TableHead>Budget Alloué</TableHead>
+                <TableHead>Dépensé</TableHead>
+                <TableHead>Restant</TableHead>
+                <TableHead>Utilisation</TableHead>
+                <TableHead>Projets</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -190,9 +189,9 @@ const BudgetManagement = () => {
                 return (
                   <TableRow key={budget.id}>
                     <TableCell className="font-medium">{budget.department}</TableCell>
-                    <TableCell>${budget.allocated.toLocaleString()}</TableCell>
-                    <TableCell>${budget.spent.toLocaleString()}</TableCell>
-                    <TableCell>${budget.remaining.toLocaleString()}</TableCell>
+                    <TableCell>{budget.allocated.toLocaleString()} DT</TableCell>
+                    <TableCell>{budget.spent.toLocaleString()} DT</TableCell>
+                    <TableCell>{budget.remaining.toLocaleString()} DT</TableCell>
                     <TableCell className="w-[200px]">
                       <div className="flex items-center gap-2">
                         <Progress value={usagePercentage} className="h-2" />
@@ -203,11 +202,11 @@ const BudgetManagement = () => {
                     <TableCell>
                       {isAlert ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                          <AlertCircle className="w-3 h-3 mr-1" /> Alert
+                          <AlertCircle className="w-3 h-3 mr-1" /> Alerte
                         </span>
                       ) : (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          Healthy
+                          Stable
                         </span>
                       )}
                     </TableCell>
@@ -239,14 +238,14 @@ const BudgetManagement = () => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Êtes-vous sûr?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the budget and all related data.
+              Cette action ne peut pas être annulée. Cela supprimera définitivement le budget et toutes les données associées.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteBudget} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteBudget} className="bg-red-600 hover:bg-red-700">Supprimer</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -11,14 +11,14 @@
     --card-foreground: 240 10% 22%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 22%;
-    --primary: 240 10% 22%;
+    --primary: 240 10% 13%;
     --primary-foreground: 0 0% 100%;
     --secondary: 52 100% 50%;
-    --secondary-foreground: 240 10% 22%;
+    --secondary-foreground: 240 10% 13%;
     --muted: 0 0% 96%;
     --muted-foreground: 240 4% 46%;
     --accent: 52 100% 50%;
-    --accent-foreground: 240 10% 22%;
+    --accent-foreground: 240 10% 13%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 90%;
@@ -43,4 +43,37 @@
 
 .hover-scale {
   @apply transition-transform duration-200 hover:scale-105;
+}
+
+/* Styles inspirés par l'image fournie */
+.sidebar-item.active {
+  @apply bg-[#FFE600] text-[#1A1A24];
+}
+
+/* Empêcher la modification du contenu */
+.content-locked {
+  @apply pointer-events-none select-none;
+}
+
+/* Styles personnalisés pour les cartes et les graphiques */
+.chart-container {
+  @apply h-[400px] w-full;
+}
+
+/* Styles pour le header */
+.dashboard-header {
+  @apply bg-[#1A1A24] text-white p-4;
+}
+
+/* Style pour les tableaux financiers */
+.financial-table {
+  @apply w-full border-collapse;
+}
+
+.financial-table th {
+  @apply py-2 px-4 bg-[#f3f3f3] border-b border-gray-300 text-left;
+}
+
+.financial-table td {
+  @apply py-2 px-4 border-b border-gray-200;
 }
