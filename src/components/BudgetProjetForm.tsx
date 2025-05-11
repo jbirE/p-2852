@@ -17,7 +17,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BudgetProjetFormData } from "@/pages/BudgetProjet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -302,11 +302,11 @@ const BudgetProjetForm = ({ isOpen, onClose, onSave, editData, projects }: Budge
         onSave={handleNewProjectSave}
         editData={undefined}
         departments={[
-          { id: 1, department: "Marketing", allocated: 50000 },
-          { id: 2, department: "Recherche & Développement", allocated: 120000 },
-          { id: 3, department: "Opérations", allocated: 80000 },
-          { id: 4, department: "Ventes", allocated: 60000 },
-          { id: 5, department: "IT", allocated: 100000 },
+          { id: 1, department: "Marketing" },
+          { id: 2, department: "Recherche & Développement" },
+          { id: 3, department: "Opérations" },
+          { id: 4, department: "Ventes" },
+          { id: 5, department: "IT" },
         ]}
       />
     </Dialog>
