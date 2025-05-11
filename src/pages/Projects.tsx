@@ -19,9 +19,9 @@ import {
 
 // Demo data for projects
 const initialProjects = [
-  { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, departmentName: "Marketing", responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
-  { id: 2, name: "Migration Système", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, departmentName: "IT", responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
-  { id: 3, name: "Étude de Marché", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, departmentName: "Ventes", responsibleId: "EMP-9012", responsibleName: "Karim Dupont" },
+  { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
+  { id: 2, name: "Migration Système", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
+  { id: 3, name: "Étude de Marché", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, responsibleId: "EMP-9012", responsibleName: "Karim Dupont" },
 ];
 
 // Demo departments for dropdown selection
@@ -88,7 +88,6 @@ const Projects = () => {
       // Update existing project
       setProjects(projects.map(project => {
         if (project.id === formData.id) {
-          const departmentName = departments.find(d => d.id === formData.departmentId)?.department || "";
           return {
             ...project,
             name: formData.name,
@@ -96,7 +95,6 @@ const Projects = () => {
             endDate: formData.endDate,
             budget: formData.budget,
             departmentId: formData.departmentId,
-            departmentName,
             responsibleId: formData.responsibleId,
             responsibleName: formData.responsibleName
           };
@@ -106,7 +104,6 @@ const Projects = () => {
     } else {
       // Add new project
       const newId = Math.max(...projects.map(p => p.id), 0) + 1;
-      const departmentName = departments.find(d => d.id === formData.departmentId)?.department || "";
       setProjects([...projects, {
         id: newId,
         name: formData.name,
@@ -114,7 +111,6 @@ const Projects = () => {
         endDate: formData.endDate,
         budget: formData.budget,
         departmentId: formData.departmentId,
-        departmentName,
         responsibleId: formData.responsibleId || "EMP-0000",
         responsibleName: formData.responsibleName || "Non Assigné"
       }]);
@@ -151,7 +147,6 @@ const Projects = () => {
                 <TableHead>Date de Début</TableHead>
                 <TableHead>Date de Fin</TableHead>
                 <TableHead>Budget</TableHead>
-                <TableHead>Département</TableHead>
                 <TableHead>Responsable</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -163,7 +158,6 @@ const Projects = () => {
                   <TableCell>{formatDate(project.startDate)}</TableCell>
                   <TableCell>{formatDate(project.endDate)}</TableCell>
                   <TableCell>{project.budget.toLocaleString()} DT</TableCell>
-                  <TableCell>{project.departmentName}</TableCell>
                   <TableCell>{project.responsibleName}</TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="sm" onClick={() => handleEditProject(project)}>

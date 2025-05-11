@@ -7,16 +7,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Bell, Globe, User } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Index from "./pages/Index";
-import Analytics from "./pages/Analytics";
-import Transactions from "./pages/Transactions";
 import BudgetManagement from "./pages/BudgetManagement";
 import ExpenseReports from "./pages/ExpenseReports";
 import FinancialDashboards from "./pages/FinancialDashboards";
-import PredictiveAnalytics from "./pages/PredictiveAnalytics";
 import AccessControl from "./pages/AccessControl";
 import Projects from "./pages/Projects";
 import Departments from "./pages/Departments";
 import Notifications from "./pages/Notifications";
+import BudgetDepartement from "./pages/BudgetDepartement";
+import BudgetProjet from "./pages/BudgetProjet";
 
 const queryClient = new QueryClient();
 
@@ -59,12 +58,11 @@ const App = () => (
               <div className="max-w-7xl mx-auto">
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/transactions" element={<Transactions />} />
+                  <Route path="/budget-departement" element={<BudgetDepartement />} />
+                  <Route path="/budget-projet" element={<BudgetProjet />} />
                   <Route path="/budget-management" element={<BudgetManagement />} />
                   <Route path="/expense-reports" element={<ExpenseReports />} />
                   <Route path="/financial-dashboards" element={<FinancialDashboards />} />
-                  <Route path="/predictive-analytics" element={<PredictiveAnalytics />} />
                   <Route path="/access-control" element={<AccessControl />} />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="/departments" element={<Departments />} />

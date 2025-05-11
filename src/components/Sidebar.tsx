@@ -1,33 +1,31 @@
 
 import { 
   Home, 
-  PieChart, 
   Settings, 
   User, 
-  CreditCard, 
   Bell, 
   DollarSign, 
   FileText, 
   LayoutDashboard, 
-  TrendingUp, 
   Lock,
   LogOut,
   Calendar,
-  Building
+  Building,
+  Briefcase,
+  BarChart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
   { icon: Home, label: "Tableau de bord", path: "/" },
-  { icon: PieChart, label: "Analytique", path: "/analytics" },
-  { icon: CreditCard, label: "Transactions", path: "/transactions" },
+  { icon: BarChart, label: "Budget Département", path: "/budget-departement" },
+  { icon: Briefcase, label: "Budget Projet", path: "/budget-projet" },
   { icon: DollarSign, label: "Gestion de Budget", path: "/budget-management" },
   { icon: Calendar, label: "Projets", path: "/projects" },
   { icon: Building, label: "Départements", path: "/departments" },
   { icon: FileText, label: "Rapports de Dépenses", path: "/expense-reports" },
   { icon: LayoutDashboard, label: "Tableaux Financiers", path: "/financial-dashboards" },
-  { icon: TrendingUp, label: "Analytique Prédictive", path: "/predictive-analytics" },
   { icon: Lock, label: "Contrôle d'Accès", path: "/access-control" },
   { icon: Bell, label: "Notifications", path: "/notifications" },
   { icon: User, label: "Profil", path: "/profile" },
