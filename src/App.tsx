@@ -16,6 +16,7 @@ import PredictiveAnalytics from "./pages/PredictiveAnalytics";
 import AccessControl from "./pages/AccessControl";
 import Projects from "./pages/Projects";
 import Departments from "./pages/Departments";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
                   <Route path="/access-control" element={<AccessControl />} />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="/departments" element={<Departments />} />
+                  <Route path="/notifications" element={<Notifications />} />
                 </Routes>
               </div>
             </main>
