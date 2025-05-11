@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -38,6 +39,13 @@ interface BudgetProjetFormProps {
   onSave: (data: BudgetProjetFormData) => void;
   editData?: BudgetProjetFormData;
   projects: { id: number; name: string; startDate: Date; endDate?: Date }[];
+}
+
+// Update the department type to match ProjectForm's expected type
+interface Department {
+  id: number;
+  department: string;
+  allocated: number;
 }
 
 const BudgetProjetForm = ({ isOpen, onClose, onSave, editData, projects }: BudgetProjetFormProps) => {
@@ -115,7 +123,7 @@ const BudgetProjetForm = ({ isOpen, onClose, onSave, editData, projects }: Budge
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[550px]">
+      <DialogContent className="sm:max-w-[550px] bg-white">
         <DialogHeader>
           <DialogTitle>{editData ? "Modifier le Budget Projet" : "Créer un Budget Projet"}</DialogTitle>
         </DialogHeader>
@@ -144,7 +152,7 @@ const BudgetProjetForm = ({ isOpen, onClose, onSave, editData, projects }: Budge
                         defaultValue={field.value.toString()}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-white">
                             <SelectValue placeholder="Sélectionner un projet" />
                           </SelectTrigger>
                         </FormControl>
@@ -306,7 +314,7 @@ const BudgetProjetForm = ({ isOpen, onClose, onSave, editData, projects }: Budge
           { id: 3, department: "R&D", allocated: 100000 },
           { id: 4, department: "Finance", allocated: 40000 },
           { id: 5, department: "Opérations", allocated: 60000 }
-        ]}
+        ] as Department[]}
       />
     </Dialog>
   );

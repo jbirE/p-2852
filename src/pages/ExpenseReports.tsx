@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail, FileExport } from "lucide-react";
+import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import ExpenseReportForm, { ExpenseFormData } from "@/components/ExpenseReportForm";
@@ -304,11 +304,11 @@ const ExpenseReports = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <FileExport className="h-4 w-4" />
+                  <FileText className="h-4 w-4" />
                   Exporter
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-48">
+              <PopoverContent className="w-48 bg-white">
                 <div className="grid gap-2">
                   <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('excel')}>
                     Format Excel

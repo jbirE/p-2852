@@ -78,7 +78,29 @@
   @apply py-2 px-4 border-b border-gray-200;
 }
 
-/* Assurer que les éléments de sélection et dropdowns ont un fond blanc */
+/* Ensure all select components have a white background */
+[data-radix-select-trigger],
+[data-radix-select-viewport],
+[data-radix-select-content],
+.select-trigger,
+.select-content,
+.SelectTrigger,
+.SelectContent {
+  @apply bg-white !important;
+}
+
+/* Ensure all popover content and dialog components have a white background */
+[data-radix-popper-content-wrapper],
+[role="dialog"],
+[role="tooltip"],
+.PopoverContent,
+.DialogContent,
+.dialog-content,
+.popover-content {
+  @apply bg-white !important;
+}
+
+/* Assurer que tous les éléments de sélection et dropdowns ont un fond blanc */
 .rdp-day {
   @apply bg-white !important;
 }

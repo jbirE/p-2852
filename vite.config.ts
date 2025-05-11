@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'development' && componentTagger({ theme: 'modern' }), // Updated to modern theme
+    mode === 'development' && componentTagger(), // Removed incorrect parameter
   ].filter(Boolean),
   resolve: {
     alias: {
