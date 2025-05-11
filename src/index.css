@@ -77,3 +77,55 @@
 .financial-table td {
   @apply py-2 px-4 border-b border-gray-200;
 }
+
+/* Assurer que les éléments de sélection et dropdowns ont un fond blanc */
+.rdp-day {
+  @apply bg-white !important;
+}
+
+/* Correction pour les menus déroulants et popover */
+[role="listbox"],
+[role="menu"],
+.react-datepicker,
+.popover-content,
+.select-dropdown {
+  @apply bg-white !important;
+}
+
+/* S'assurer que tous les éléments de Radix UI ont un fond blanc */
+[data-radix-popper-content-wrapper],
+[data-state],
+[data-radix-select-viewport],
+[data-radix-scroll-area-viewport] {
+  @apply bg-white !important;
+}
+
+/* Assurer que tous les popover content ont un fond blanc */
+.radix-popover-content,
+[data-radix-popper-content],
+[data-radix-dialog-content],
+.rdp-months {
+  @apply bg-white !important;
+}
+
+/* Assurer que les select content ont un fond blanc */
+.rdp-caption_dropdowns,
+.rdp-dropdown_month,
+.rdp-dropdown_year,
+.rdp-dropdown_options {
+  @apply bg-white !important;
+}
+
+/* Assurer que tous les éléments de sélection de date ont un fond blanc */
+.react-datepicker__month-container,
+.react-datepicker__header,
+.react-datepicker__day {
+  @apply bg-white !important;
+}
+
+/* S'assurer que les contenus des sélecteurs sont visibles */
+.select-content,
+.calendar-content,
+.popover-content {
+  @apply bg-white border border-gray-200 shadow-md !important;
+}

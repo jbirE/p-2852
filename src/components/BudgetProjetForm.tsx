@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -302,11 +301,11 @@ const BudgetProjetForm = ({ isOpen, onClose, onSave, editData, projects }: Budge
         onSave={handleNewProjectSave}
         editData={undefined}
         departments={[
-          { id: 1, department: "Marketing" },
-          { id: 2, department: "Recherche & Développement" },
-          { id: 3, department: "Opérations" },
-          { id: 4, department: "Ventes" },
-          { id: 5, department: "IT" },
+          { id: 1, department: "Marketing", allocated: 50000 },
+          { id: 2, department: "Ventes", allocated: 75000 },
+          { id: 3, department: "R&D", allocated: 100000 },
+          { id: 4, department: "Finance", allocated: 40000 },
+          { id: 5, department: "Opérations", allocated: 60000 }
         ]}
       />
     </Dialog>

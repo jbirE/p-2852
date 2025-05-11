@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail } from "lucide-react";
+import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail, FileExport } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import ExpenseReportForm, { ExpenseFormData } from "@/components/ExpenseReportForm";
@@ -121,6 +120,7 @@ const ExpenseReports = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<null | any>(null);
   const [approvalModalOpen, setApprovalModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   
   // Count by status
   const approvedCount = reports.filter(r => r.status === 'approved').length;
@@ -211,6 +211,29 @@ const ExpenseReports = () => {
     toast.success(`Rappel envoyé pour le rapport ${reportId}`);
   };
 
+  const exportReports = (format: string) => {
+    toast.success(`Rapports exportés au format ${format}`);
+  };
+
+  const approveOrRejectReport = (reportId: string, action: 'approve' | 'reject') => {
+    setReports(reports.map(report => {
+      if (report.id === reportId) {
+        return {
+          ...report,
+          status: action === 'approve' ? 'approved' : 'rejected',
+          approver: "Action directe"
+        };
+      }
+      return report;
+    }));
+    
+    toast.success(
+      action === 'approve' 
+        ? `Rapport ${reportId} a été approuvé directement` 
+        : `Rapport ${reportId} a été rejeté directement`
+    );
+  };
+
   return (
     <div className="space-y-8">
       <header className="flex justify-between items-center">
@@ -277,10 +300,34 @@ const ExpenseReports = () => {
       <Card className="glass-card">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Rapports de Dépenses</CardTitle>
-          <Button variant="outline" size="sm" className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            Filtrer
-          </Button>
+          <div className="flex gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <FileExport className="h-4 w-4" />
+                  Exporter
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48">
+                <div className="grid gap-2">
+                  <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('excel')}>
+                    Format Excel
+                  </Button>
+                  <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('pdf')}>
+                    Format PDF
+                  </Button>
+                  <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('csv')}>
+                    Format CSV
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Filtrer
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Table>
@@ -322,6 +369,26 @@ const ExpenseReports = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
+                      {report.status === 'pending' && (
+                        <>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="flex items-center gap-1 text-green-600 hover:text-green-800" 
+                            onClick={() => approveOrRejectReport(report.id, 'approve')}
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="flex items-center gap-1 text-red-600 hover:text-red-800" 
+                            onClick={() => approveOrRejectReport(report.id, 'reject')}
+                          >
+                            <XCircle className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
                       <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => viewApprovalWorkflow(report)}>
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -334,7 +401,7 @@ const ExpenseReports = () => {
                         <PopoverTrigger asChild>
                           <Button variant="ghost" size="sm">...</Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-56">
+                        <PopoverContent className="w-56 bg-white">
                           <div className="grid gap-2">
                             <Button variant="ghost" size="sm" className="justify-start">Voir les Détails</Button>
                             <Button variant="ghost" size="sm" className="justify-start">Télécharger PDF</Button>
