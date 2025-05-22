@@ -1,13 +1,18 @@
+
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail } from "lucide-react";
+import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail, CalendarIcon } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import ExpenseReportForm, { ExpenseFormData } from "@/components/ExpenseReportForm";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
 
 // Sample expense reports data
 const expenseReportsData = [
@@ -122,11 +127,92 @@ const ExpenseReports = () => {
   const [approvalModalOpen, setApprovalModalOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   
+  // Filter states
+  const [filteredReports, setFilteredReports] = useState(expenseReportsData);
+  const [filters, setFilters] = useState({
+    status: "",
+    department: "",
+    category: "",
+    startDate: null as Date | null,
+    endDate: null as Date | null,
+    minAmount: "",
+    maxAmount: "",
+    submittedBy: "",
+    projectName: "",
+  });
+  
+  // Get unique values for filters
+  const departments = [...new Set(reports.map(r => r.department))];
+  const categories = [...new Set(reports.map(r => r.category))];
+  const submitters = [...new Set(reports.map(r => r.submittedBy))];
+  const projects = [...new Set(reports.map(r => r.projectName))];
+  
   // Count by status
   const approvedCount = reports.filter(r => r.status === 'approved').length;
   const pendingCount = reports.filter(r => r.status === 'pending').length;
   const rejectedCount = reports.filter(r => r.status === 'rejected').length;
   
+  const applyFilters = () => {
+    let result = [...reports];
+    
+    if (filters.status) {
+      result = result.filter(r => r.status === filters.status);
+    }
+    
+    if (filters.department) {
+      result = result.filter(r => r.department === filters.department);
+    }
+    
+    if (filters.category) {
+      result = result.filter(r => r.category === filters.category);
+    }
+    
+    if (filters.submittedBy) {
+      result = result.filter(r => r.submittedBy === filters.submittedBy);
+    }
+    
+    if (filters.projectName) {
+      result = result.filter(r => r.projectName === filters.projectName);
+    }
+    
+    if (filters.startDate) {
+      result = result.filter(r => new Date(r.date) >= filters.startDate!);
+    }
+    
+    if (filters.endDate) {
+      result = result.filter(r => new Date(r.date) <= filters.endDate!);
+    }
+    
+    if (filters.minAmount && !isNaN(Number(filters.minAmount))) {
+      result = result.filter(r => r.amount >= Number(filters.minAmount));
+    }
+    
+    if (filters.maxAmount && !isNaN(Number(filters.maxAmount))) {
+      result = result.filter(r => r.amount <= Number(filters.maxAmount));
+    }
+    
+    setFilteredReports(result);
+    setFilterModalOpen(false);
+    toast.success(`${result.length} rapports trouvés`);
+  };
+  
+  const resetFilters = () => {
+    setFilters({
+      status: "",
+      department: "",
+      category: "",
+      startDate: null,
+      endDate: null,
+      minAmount: "",
+      maxAmount: "",
+      submittedBy: "",
+      projectName: "",
+    });
+    setFilteredReports(reports);
+    setFilterModalOpen(false);
+    toast.info("Filtres réinitialisés");
+  };
+
   const handleAddExpenseReport = (data: ExpenseFormData) => {
     const newReport = {
       id: data.reportId,
@@ -323,7 +409,12 @@ const ExpenseReports = () => {
               </PopoverContent>
             </Popover>
             
-            <Button variant="outline" size="sm" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="flex items-center gap-2"
+              onClick={() => setFilterModalOpen(true)}
+            >
               <Filter className="h-4 w-4" />
               Filtrer
             </Button>
@@ -346,7 +437,7 @@ const ExpenseReports = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {reports.map((report) => (
+              {filteredReports.map((report) => (
                 <TableRow key={report.id}>
                   <TableCell className="font-medium">{report.id}</TableCell>
                   <TableCell>{report.description}</TableCell>
@@ -425,10 +516,189 @@ const ExpenseReports = () => {
         onSave={handleAddExpenseReport}
       />
 
+      {/* Filter Dialog */}
+      <Dialog open={filterModalOpen} onOpenChange={setFilterModalOpen}>
+        <DialogContent className="sm:max-w-[600px] bg-white">
+          <DialogHeader>
+            <DialogTitle>Filtrer les Rapports de Dépense</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Statut</label>
+              <Select
+                value={filters.status}
+                onValueChange={(value) => setFilters({...filters, status: value})}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Tous les statuts" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="">Tous les statuts</SelectItem>
+                  <SelectItem value="approved">Approuvé</SelectItem>
+                  <SelectItem value="pending">En Attente</SelectItem>
+                  <SelectItem value="rejected">Rejeté</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Département</label>
+              <Select
+                value={filters.department}
+                onValueChange={(value) => setFilters({...filters, department: value})}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Tous les départements" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="">Tous les départements</SelectItem>
+                  {departments.map(dept => (
+                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Catégorie</label>
+              <Select
+                value={filters.category}
+                onValueChange={(value) => setFilters({...filters, category: value})}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Toutes les catégories" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="">Toutes les catégories</SelectItem>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Projet</label>
+              <Select
+                value={filters.projectName}
+                onValueChange={(value) => setFilters({...filters, projectName: value})}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Tous les projets" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="">Tous les projets</SelectItem>
+                  {projects.map(proj => (
+                    <SelectItem key={proj} value={proj}>{proj}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Soumis Par</label>
+              <Select
+                value={filters.submittedBy}
+                onValueChange={(value) => setFilters({...filters, submittedBy: value})}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Tous les soumetteurs" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="">Tous les soumetteurs</SelectItem>
+                  {submitters.map(sub => (
+                    <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Date de début</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={`w-full justify-start text-left font-normal bg-white ${!filters.startDate && "text-muted-foreground"}`}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {filters.startDate ? format(filters.startDate, "dd/MM/yyyy") : <span>Date de début</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-white" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={filters.startDate || undefined}
+                    onSelect={(date) => setFilters({...filters, startDate: date})}
+                    initialFocus
+                    className="p-3 pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Date de fin</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={`w-full justify-start text-left font-normal bg-white ${!filters.endDate && "text-muted-foreground"}`}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {filters.endDate ? format(filters.endDate, "dd/MM/yyyy") : <span>Date de fin</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 bg-white" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={filters.endDate || undefined}
+                    onSelect={(date) => setFilters({...filters, endDate: date})}
+                    initialFocus
+                    className="p-3 pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Montant Min (DT)</label>
+              <Input
+                type="number"
+                placeholder="Montant minimum"
+                className="bg-white"
+                value={filters.minAmount}
+                onChange={(e) => setFilters({...filters, minAmount: e.target.value})}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Montant Max (DT)</label>
+              <Input
+                type="number"
+                placeholder="Montant maximum"
+                className="bg-white"
+                value={filters.maxAmount}
+                onChange={(e) => setFilters({...filters, maxAmount: e.target.value})}
+              />
+            </div>
+          </div>
+          
+          <DialogFooter className="flex items-center justify-between mt-6">
+            <Button variant="outline" onClick={resetFilters} className="bg-white">
+              Réinitialiser
+            </Button>
+            <Button onClick={applyFilters}>
+              Appliquer les filtres
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Approval Workflow Dialog */}
       {selectedReport && (
         <Dialog open={approvalModalOpen} onOpenChange={setApprovalModalOpen}>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] bg-white">
             <DialogHeader>
               <DialogTitle>Flux d'Approbation - {selectedReport.id}</DialogTitle>
             </DialogHeader>
