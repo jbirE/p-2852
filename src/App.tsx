@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Bell, Globe, User } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import BudgetManagement from "./pages/BudgetManagement";
 import ExpenseReports from "./pages/ExpenseReports";
 import FinancialDashboards from "./pages/FinancialDashboards";
@@ -58,6 +59,7 @@ const App = () => (
               <div className="max-w-7xl mx-auto">
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/auth" element={<Auth />} />
                   <Route path="/budget-departement" element={<BudgetDepartement />} />
                   <Route path="/budget-projet" element={<BudgetProjet />} />
                   <Route path="/budget-management" element={<BudgetManagement />} />
