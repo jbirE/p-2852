@@ -51,29 +51,36 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="flex min-h-screen bg-[#F6F6FA]">
-          <Sidebar />
-          <div className="flex flex-col flex-1">
-            <NavBar />
-            <main className="p-6 ml-64">
-              <div className="max-w-7xl mx-auto">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/budget-departement" element={<BudgetDepartement />} />
-                  <Route path="/budget-projet" element={<BudgetProjet />} />
-                  <Route path="/budget-management" element={<BudgetManagement />} />
-                  <Route path="/expense-reports" element={<ExpenseReports />} />
-                  <Route path="/financial-dashboards" element={<FinancialDashboards />} />
-                  <Route path="/access-control" element={<AccessControl />} />
-                  <Route path="/projects" element={<Projects />} />
-                  <Route path="/departments" element={<Departments />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                </Routes>
+        <Routes>
+          {/* Route d'authentification sans layout */}
+          <Route path="/auth" element={<Auth />} />
+          
+          {/* Routes avec layout complet */}
+          <Route path="/*" element={
+            <div className="flex min-h-screen bg-[#F6F6FA]">
+              <Sidebar />
+              <div className="flex flex-col flex-1">
+                <NavBar />
+                <main className="p-6 ml-64">
+                  <div className="max-w-7xl mx-auto">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/budget-departement" element={<BudgetDepartement />} />
+                      <Route path="/budget-projet" element={<BudgetProjet />} />
+                      <Route path="/budget-management" element={<BudgetManagement />} />
+                      <Route path="/expense-reports" element={<ExpenseReports />} />
+                      <Route path="/financial-dashboards" element={<FinancialDashboards />} />
+                      <Route path="/access-control" element={<AccessControl />} />
+                      <Route path="/projects" element={<Projects />} />
+                      <Route path="/departments" element={<Departments />} />
+                      <Route path="/notifications" element={<Notifications />} />
+                    </Routes>
+                  </div>
+                </main>
               </div>
-            </main>
-          </div>
-        </div>
+            </div>
+          } />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
