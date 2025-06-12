@@ -8,6 +8,7 @@ import { Bell, Globe, User } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import ManagerBudgetDashboard from "./pages/ManagerBudgetDashboard";
 import BudgetManagement from "./pages/BudgetManagement";
 import ExpenseReports from "./pages/ExpenseReports";
 import FinancialDashboards from "./pages/FinancialDashboards";

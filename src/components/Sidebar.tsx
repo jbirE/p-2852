@@ -12,13 +12,15 @@ import {
   Calendar,
   Building,
   Briefcase,
-  BarChart
+  BarChart,
+  Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
   { icon: Home, label: "Tableau de bord", path: "/" },
+  { icon: Target, label: "Gestion Budgets Manager", path: "/manager-budget" },
   { icon: BarChart, label: "Budget Département", path: "/budget-departement" },
   { icon: Briefcase, label: "Budget Projet", path: "/budget-projet" },
   { icon: DollarSign, label: "Gestion de Budget", path: "/budget-management" },
