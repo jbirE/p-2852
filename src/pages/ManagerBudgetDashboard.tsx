@@ -1,8 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Eye, Pencil, Trash2, Search, Filter, Download, AlertTriangle, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
+import { Plus, Eye, Pencil, Trash2, Search, Filter, Download, AlertTriangle, TrendingUp, TrendingDown, DollarSign, RefreshCw } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,7 @@ interface DepartmentBudget {
   remainingBudget: number;
   utilizationRate: number;
   fiscalYear: string;
+  lastUpdated: Date;
 }
 
 interface ProjectBudget {
@@ -52,17 +53,19 @@ interface ProjectBudget {
   department: string;
   priority: 'high' | 'medium' | 'low';
   utilizationRate: number;
+  lastExpenseDate?: Date;
 }
 
 // Données de démonstration pour le département du manager
-const departmentData: DepartmentBudget = {
+const initialDepartmentData: DepartmentBudget = {
   id: 1,
   department: "Technology & Innovation",
   totalBudget: 500000,
   allocatedToBudgets: 320000,
   remainingBudget: 180000,
   utilizationRate: 64,
-  fiscalYear: "2025"
+  fiscalYear: "2025",
+  lastUpdated: new Date()
 };
 
 // Données de démonstration pour les budgets de projets
@@ -79,7 +82,8 @@ const initialProjectBudgets: ProjectBudget[] = [
     endDate: new Date("2025-06-30"),
     department: "Technology & Innovation",
     priority: 'high',
-    utilizationRate: 62.5
+    utilizationRate: 62.5,
+    lastExpenseDate: new Date("2025-01-15")
   },
   {
     id: 2,
@@ -93,7 +97,8 @@ const initialProjectBudgets: ProjectBudget[] = [
     endDate: new Date("2025-08-31"),
     department: "Technology & Innovation",
     priority: 'medium',
-    utilizationRate: 35.3
+    utilizationRate: 35.3,
+    lastExpenseDate: new Date("2025-01-20")
   },
   {
     id: 3,
@@ -107,7 +112,8 @@ const initialProjectBudgets: ProjectBudget[] = [
     endDate: new Date("2025-04-30"),
     department: "Technology & Innovation",
     priority: 'high',
-    utilizationRate: 107.7
+    utilizationRate: 107.7,
+    lastExpenseDate: new Date("2025-01-22")
   },
   {
     id: 4,
@@ -121,7 +127,8 @@ const initialProjectBudgets: ProjectBudget[] = [
     endDate: new Date("2024-12-31"),
     department: "Technology & Innovation",
     priority: 'medium',
-    utilizationRate: 100
+    utilizationRate: 100,
+    lastExpenseDate: new Date("2024-12-30")
   }
 ];
 
@@ -176,6 +183,7 @@ const PriorityBadge = ({ priority }: { priority: ProjectBudget['priority'] }) =>
 };
 
 const ManagerBudgetDashboard = () => {
+  const [departmentData, setDepartmentData] = useState<DepartmentBudget>(initialDepartmentData);
   const [projectBudgets, setProjectBudgets] = useState<ProjectBudget[]>(initialProjectBudgets);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -184,6 +192,48 @@ const ManagerBudgetDashboard = () => {
   const [currentBudget, setCurrentBudget] = useState<BudgetProjetFormData | undefined>();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [budgetToDelete, setBudgetToDelete] = useState<number | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Simulation du suivi en temps réel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simuler des mises à jour automatiques des données
+      setDepartmentData(prev => ({
+        ...prev,
+        lastUpdated: new Date()
+      }));
+    }, 30000); // Mise à jour toutes les 30 secondes
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    
+    // Simuler une actualisation des données
+    setTimeout(() => {
+      setDepartmentData(prev => ({
+        ...prev,
+        lastUpdated: new Date()
+      }));
+      setIsRefreshing(false);
+      toast.success("Données actualisées avec succès");
+    }, 1000);
+  };
+
+  const updateDepartmentBudget = () => {
+    const totalAllocated = projectBudgets.reduce((sum, pb) => sum + pb.allocatedAmount, 0);
+    const remaining = departmentData.totalBudget - totalAllocated;
+    const utilizationRate = (totalAllocated / departmentData.totalBudget) * 100;
+
+    setDepartmentData(prev => ({
+      ...prev,
+      allocatedToBudgets: totalAllocated,
+      remainingBudget: remaining,
+      utilizationRate: Math.round(utilizationRate),
+      lastUpdated: new Date()
+    }));
+  };
 
   const handleAddBudget = () => {
     setCurrentBudget(undefined);
@@ -205,16 +255,23 @@ const ManagerBudgetDashboard = () => {
 
   const handleDeleteBudget = () => {
     if (budgetToDelete) {
-      setProjectBudgets(projectBudgets.filter(pb => pb.id !== budgetToDelete));
+      setProjectBudgets(prev => {
+        const newBudgets = prev.filter(pb => pb.id !== budgetToDelete);
+        return newBudgets;
+      });
       toast.success("Budget projet supprimé avec succès");
       setIsDeleteDialogOpen(false);
+      setBudgetToDelete(null);
+      
+      // Mettre à jour le budget départemental
+      setTimeout(updateDepartmentBudget, 100);
     }
   };
 
   const handleSaveBudget = (formData: BudgetProjetFormData) => {
     if (formData.id) {
       // Mise à jour budget existant
-      setProjectBudgets(projectBudgets.map(pb => {
+      setProjectBudgets(prev => prev.map(pb => {
         if (pb.id === formData.id) {
           const spentAmount = formData.totalExpenses || pb.spentAmount;
           const remainingAmount = formData.allocatedAmount - spentAmount;
@@ -230,10 +287,11 @@ const ManagerBudgetDashboard = () => {
             allocatedAmount: formData.allocatedAmount,
             spentAmount,
             remainingAmount,
-            utilizationRate,
+            utilizationRate: Math.round(utilizationRate * 10) / 10,
             status,
             creationDate: formData.creationDate,
-            endDate: formData.endDate || pb.endDate
+            endDate: formData.endDate || pb.endDate,
+            lastExpenseDate: new Date()
           };
         }
         return pb;
@@ -244,25 +302,34 @@ const ManagerBudgetDashboard = () => {
       const project = availableProjects.find(p => p.id === formData.projectId);
       const newId = Math.max(...projectBudgets.map(pb => pb.id), 0) + 1;
       
+      const spentAmount = formData.totalExpenses || 0;
+      const remainingAmount = formData.allocatedAmount - spentAmount;
+      const utilizationRate = (spentAmount / formData.allocatedAmount) * 100;
+      
       const newBudget: ProjectBudget = {
         id: newId,
         projectName: formData.projectName || project?.name || "Nouveau Projet",
         projectId: formData.projectId,
         allocatedAmount: formData.allocatedAmount,
-        spentAmount: formData.totalExpenses || 0,
-        remainingAmount: formData.allocatedAmount - (formData.totalExpenses || 0),
-        status: 'active',
+        spentAmount,
+        remainingAmount,
+        status: utilizationRate >= 100 ? 'over-budget' : 'active',
         creationDate: formData.creationDate,
         endDate: formData.endDate || project?.endDate || new Date(),
         department: departmentData.department,
         priority: 'medium',
-        utilizationRate: ((formData.totalExpenses || 0) / formData.allocatedAmount) * 100
+        utilizationRate: Math.round(utilizationRate * 10) / 10,
+        lastExpenseDate: spentAmount > 0 ? new Date() : undefined
       };
 
-      setProjectBudgets([...projectBudgets, newBudget]);
+      setProjectBudgets(prev => [...prev, newBudget]);
       toast.success("Budget projet créé avec succès");
     }
+    
     setIsFormOpen(false);
+    
+    // Mettre à jour le budget départemental
+    setTimeout(updateDepartmentBudget, 100);
   };
 
   const formatCurrency = (amount: number) => {
@@ -271,6 +338,13 @@ const ManagerBudgetDashboard = () => {
       currency: 'TND',
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const formatDateTime = (date: Date) => {
+    return new Intl.DateTimeFormat('fr-FR', {
+      dateStyle: 'short',
+      timeStyle: 'short'
+    }).format(date);
   };
 
   const filteredBudgets = projectBudgets.filter(budget => {
@@ -286,13 +360,35 @@ const ManagerBudgetDashboard = () => {
   const activeBudgets = projectBudgets.filter(pb => pb.status === 'active').length;
   const overBudgetCount = projectBudgets.filter(pb => pb.status === 'over-budget').length;
 
+  // Mise à jour du budget départemental à chaque changement
+  useEffect(() => {
+    updateDepartmentBudget();
+  }, [projectBudgets]);
+
   return (
     <div className="space-y-6">
-      {/* En-tête */}
+      {/* En-tête avec suivi temps réel */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord Budgets</h1>
-          <p className="text-gray-600">Gestion des budgets départementaux et projets - {departmentData.department}</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord Budgets</h1>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Actualiser
+            </Button>
+          </div>
+          <p className="text-gray-600">
+            Gestion des budgets départementaux et projets - {departmentData.department}
+          </p>
+          <p className="text-sm text-gray-500">
+            Dernière mise à jour: {formatDateTime(departmentData.lastUpdated)}
+          </p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="flex items-center gap-2">
@@ -306,13 +402,21 @@ const ManagerBudgetDashboard = () => {
         </div>
       </div>
 
-      {/* Vue d'ensemble du département */}
+      {/* Vue d'ensemble du département avec indicateurs temps réel */}
       <Card className="p-6 border border-gray-200 shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-900">Budget Départemental - {departmentData.fiscalYear}</h2>
-          <Badge variant="outline" className="text-lg px-3 py-1">
-            {departmentData.department}
-          </Badge>
+          <div className="flex items-center gap-3">
+            <Badge variant="outline" className="text-lg px-3 py-1">
+              {departmentData.department}
+            </Badge>
+            {departmentData.utilizationRate > 90 && (
+              <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                <AlertTriangle className="h-3 w-3 mr-1" />
+                Attention
+              </Badge>
+            )}
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -326,19 +430,27 @@ const ManagerBudgetDashboard = () => {
           </div>
           <div className="space-y-2">
             <p className="text-sm text-gray-600">Budget Disponible</p>
-            <p className="text-2xl font-bold text-green-600">{formatCurrency(departmentData.remainingBudget)}</p>
+            <p className={`text-2xl font-bold ${departmentData.remainingBudget < 50000 ? 'text-red-600' : 'text-green-600'}`}>
+              {formatCurrency(departmentData.remainingBudget)}
+            </p>
           </div>
           <div className="space-y-2">
             <p className="text-sm text-gray-600">Taux d'Utilisation</p>
             <div className="flex items-center gap-3">
-              <Progress value={departmentData.utilizationRate} className="flex-1" />
-              <span className="text-sm font-medium">{departmentData.utilizationRate}%</span>
+              <Progress 
+                value={departmentData.utilizationRate} 
+                className="flex-1"
+                indicatorColor={departmentData.utilizationRate > 90 ? '#dc2626' : departmentData.utilizationRate > 70 ? '#f59e0b' : '#10b981'}
+              />
+              <span className={`text-sm font-medium ${departmentData.utilizationRate > 90 ? 'text-red-600' : 'text-gray-600'}`}>
+                {departmentData.utilizationRate}%
+              </span>
             </div>
           </div>
         </div>
       </Card>
 
-      {/* Métriques des projets */}
+      {/* Métriques des projets avec alertes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4">
           <div className="flex items-center justify-between">
@@ -370,22 +482,24 @@ const ManagerBudgetDashboard = () => {
           </div>
         </Card>
         
-        <Card className="p-4">
+        <Card className={`p-4 ${overBudgetCount > 0 ? 'border-red-200 bg-red-50' : ''}`}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Dépassements</p>
-              <p className="text-xl font-bold text-red-600">{overBudgetCount}</p>
+              <p className={`text-xl font-bold ${overBudgetCount > 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                {overBudgetCount}
+              </p>
             </div>
-            <AlertTriangle className="h-8 w-8 text-red-500" />
+            <AlertTriangle className={`h-8 w-8 ${overBudgetCount > 0 ? 'text-red-500' : 'text-gray-400'}`} />
           </div>
         </Card>
       </div>
 
-      {/* Table des budgets de projets */}
+      {/* Table des budgets de projets avec fonctionnalités complètes */}
       <Card>
         <CardHeader className="pb-4">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-            <CardTitle>Budgets des Projets</CardTitle>
+            <CardTitle>Budgets des Projets ({filteredBudgets.length})</CardTitle>
             
             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
               <div className="relative">
@@ -444,11 +558,16 @@ const ManagerBudgetDashboard = () => {
               </TableHeader>
               <TableBody>
                 {filteredBudgets.map((budget) => (
-                  <TableRow key={budget.id}>
+                  <TableRow key={budget.id} className={budget.status === 'over-budget' ? 'bg-red-50' : ''}>
                     <TableCell className="font-medium">
                       <div>
                         <p className="font-semibold">{budget.projectName}</p>
                         <p className="text-sm text-gray-500">ID: {budget.projectId}</p>
+                        {budget.lastExpenseDate && (
+                          <p className="text-xs text-gray-400">
+                            Dernière dépense: {budget.lastExpenseDate.toLocaleDateString('fr-FR')}
+                          </p>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>{formatCurrency(budget.allocatedAmount)}</TableCell>
@@ -461,6 +580,7 @@ const ManagerBudgetDashboard = () => {
                         <Progress 
                           value={Math.min(budget.utilizationRate, 100)} 
                           className="w-16 h-2"
+                          indicatorColor={budget.utilizationRate > 100 ? '#dc2626' : budget.utilizationRate > 80 ? '#f59e0b' : '#10b981'}
                         />
                         <span className={`text-xs font-medium ${budget.utilizationRate > 100 ? 'text-red-600' : 'text-gray-600'}`}>
                           {budget.utilizationRate.toFixed(1)}%
@@ -478,10 +598,10 @@ const ManagerBudgetDashboard = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex gap-1 justify-end">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" title="Voir détails">
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleEditBudget(budget)}>
+                        <Button variant="ghost" size="sm" onClick={() => handleEditBudget(budget)} title="Modifier">
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button 
@@ -492,6 +612,7 @@ const ManagerBudgetDashboard = () => {
                             setBudgetToDelete(budget.id);
                             setIsDeleteDialogOpen(true);
                           }}
+                          title="Supprimer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -505,6 +626,13 @@ const ManagerBudgetDashboard = () => {
             {filteredBudgets.length === 0 && (
               <div className="text-center py-8">
                 <p className="text-gray-500">Aucun budget trouvé avec les filtres actuels</p>
+                <Button variant="outline" className="mt-4" onClick={() => {
+                  setSearchTerm("");
+                  setStatusFilter("all");
+                  setPriorityFilter("all");
+                }}>
+                  Réinitialiser les filtres
+                </Button>
               </div>
             )}
           </div>
@@ -517,11 +645,11 @@ const ManagerBudgetDashboard = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
             <AlertDialogDescription>
-              Êtes-vous sûr de vouloir supprimer ce budget projet ? Cette action est irréversible.
+              Êtes-vous sûr de vouloir supprimer ce budget projet ? Cette action est irréversible et mettra à jour automatiquement le budget départemental.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setBudgetToDelete(null)}>Annuler</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteBudget} className="bg-red-600 hover:bg-red-700">
               Supprimer
             </AlertDialogAction>
