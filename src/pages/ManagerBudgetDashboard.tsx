@@ -1,19 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Eye, Pencil, Trash2, Search, Filter, Download, AlertTriangle, TrendingUp, TrendingDown, DollarSign, RefreshCw } from "lucide-react";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,9 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Progress } from "@/components/ui/progress";
 import BudgetProjetForm from "@/components/BudgetProjetForm";
 import { BudgetProjetFormData } from "@/pages/BudgetProjet";
+import DashboardHeader from "@/components/manager-budget/DashboardHeader";
+import DepartmentOverview from "@/components/manager-budget/DepartmentOverview";
+import MetricsCards from "@/components/manager-budget/MetricsCards";
+import ProjectBudgetTable, { ProjectBudget } from "@/components/manager-budget/ProjectBudgetTable";
 
 // Types pour la gestion des budgets
 interface DepartmentBudget {
@@ -38,22 +27,6 @@ interface DepartmentBudget {
   utilizationRate: number;
   fiscalYear: string;
   lastUpdated: Date;
-}
-
-interface ProjectBudget {
-  id: number;
-  projectName: string;
-  projectId: number;
-  allocatedAmount: number;
-  spentAmount: number;
-  remainingAmount: number;
-  status: 'active' | 'completed' | 'on-hold' | 'over-budget';
-  creationDate: Date;
-  endDate: Date;
-  department: string;
-  priority: 'high' | 'medium' | 'low';
-  utilizationRate: number;
-  lastExpenseDate?: Date;
 }
 
 // Données de démonstration pour le département du manager
@@ -140,48 +113,6 @@ const availableProjects = [
   { id: 108, name: "Automation Framework", startDate: new Date("2025-05-01"), endDate: new Date("2025-11-30") },
 ];
 
-const StatusBadge = ({ status }: { status: ProjectBudget['status'] }) => {
-  const variants = {
-    'active': "bg-green-100 text-green-800",
-    'completed': "bg-blue-100 text-blue-800",
-    'on-hold': "bg-yellow-100 text-yellow-800",
-    'over-budget': "bg-red-100 text-red-800",
-  };
-
-  const labels = {
-    'active': "Actif",
-    'completed': "Terminé",
-    'on-hold': "En Pause",
-    'over-budget': "Dépassé",
-  };
-
-  return (
-    <Badge className={variants[status]}>
-      {labels[status]}
-    </Badge>
-  );
-};
-
-const PriorityBadge = ({ priority }: { priority: ProjectBudget['priority'] }) => {
-  const variants = {
-    'high': "bg-red-50 text-red-700 border-red-200",
-    'medium': "bg-yellow-50 text-yellow-700 border-yellow-200",
-    'low': "bg-gray-50 text-gray-700 border-gray-200",
-  };
-
-  const labels = {
-    'high': "Haute",
-    'medium': "Moyenne",
-    'low': "Basse",
-  };
-
-  return (
-    <Badge variant="outline" className={variants[priority]}>
-      {labels[priority]}
-    </Badge>
-  );
-};
-
 const ManagerBudgetDashboard = () => {
   const [departmentData, setDepartmentData] = useState<DepartmentBudget>(initialDepartmentData);
   const [projectBudgets, setProjectBudgets] = useState<ProjectBudget[]>(initialProjectBudgets);
@@ -266,6 +197,11 @@ const ManagerBudgetDashboard = () => {
       // Mettre à jour le budget départemental
       setTimeout(updateDepartmentBudget, 100);
     }
+  };
+
+  const handleDeleteClick = (budgetId: number) => {
+    setBudgetToDelete(budgetId);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleSaveBudget = (formData: BudgetProjetFormData) => {
@@ -367,279 +303,41 @@ const ManagerBudgetDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* En-tête avec suivi temps réel */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord Budgets</h1>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Actualiser
-            </Button>
-          </div>
-          <p className="text-gray-600">
-            Gestion des budgets départementaux et projets - {departmentData.department}
-          </p>
-          <p className="text-sm text-gray-500">
-            Dernière mise à jour: {formatDateTime(departmentData.lastUpdated)}
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Exporter
-          </Button>
-          <Button onClick={handleAddBudget} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Nouveau Budget Projet
-          </Button>
-        </div>
-      </div>
+      <DashboardHeader
+        departmentName={departmentData.department}
+        lastUpdated={departmentData.lastUpdated}
+        isRefreshing={isRefreshing}
+        onRefresh={handleRefresh}
+        onAddBudget={handleAddBudget}
+        formatDateTime={formatDateTime}
+      />
 
-      {/* Vue d'ensemble du département avec indicateurs temps réel */}
-      <Card className="p-6 border border-gray-200 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Budget Départemental - {departmentData.fiscalYear}</h2>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="text-lg px-3 py-1">
-              {departmentData.department}
-            </Badge>
-            {departmentData.utilizationRate > 90 && (
-              <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                Attention
-              </Badge>
-            )}
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="space-y-2">
-            <p className="text-sm text-gray-600">Budget Total</p>
-            <p className="text-2xl font-bold text-gray-900">{formatCurrency(departmentData.totalBudget)}</p>
-          </div>
-          <div className="space-y-2">
-            <p className="text-sm text-gray-600">Alloué aux Projets</p>
-            <p className="text-2xl font-bold text-blue-600">{formatCurrency(departmentData.allocatedToBudgets)}</p>
-          </div>
-          <div className="space-y-2">
-            <p className="text-sm text-gray-600">Budget Disponible</p>
-            <p className={`text-2xl font-bold ${departmentData.remainingBudget < 50000 ? 'text-red-600' : 'text-green-600'}`}>
-              {formatCurrency(departmentData.remainingBudget)}
-            </p>
-          </div>
-          <div className="space-y-2">
-            <p className="text-sm text-gray-600">Taux d'Utilisation</p>
-            <div className="flex items-center gap-3">
-              <Progress 
-                value={departmentData.utilizationRate} 
-                className="flex-1"
-                indicatorColor={departmentData.utilizationRate > 90 ? '#dc2626' : departmentData.utilizationRate > 70 ? '#f59e0b' : '#10b981'}
-              />
-              <span className={`text-sm font-medium ${departmentData.utilizationRate > 90 ? 'text-red-600' : 'text-gray-600'}`}>
-                {departmentData.utilizationRate}%
-              </span>
-            </div>
-          </div>
-        </div>
-      </Card>
+      <DepartmentOverview
+        departmentData={departmentData}
+        formatCurrency={formatCurrency}
+      />
 
-      {/* Métriques des projets avec alertes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Budgets Alloués</p>
-              <p className="text-xl font-bold">{formatCurrency(totalAllocated)}</p>
-            </div>
-            <DollarSign className="h-8 w-8 text-blue-500" />
-          </div>
-        </Card>
-        
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Montant Dépensé</p>
-              <p className="text-xl font-bold">{formatCurrency(totalSpent)}</p>
-            </div>
-            <TrendingDown className="h-8 w-8 text-orange-500" />
-          </div>
-        </Card>
-        
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Projets Actifs</p>
-              <p className="text-xl font-bold">{activeBudgets}</p>
-            </div>
-            <TrendingUp className="h-8 w-8 text-green-500" />
-          </div>
-        </Card>
-        
-        <Card className={`p-4 ${overBudgetCount > 0 ? 'border-red-200 bg-red-50' : ''}`}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Dépassements</p>
-              <p className={`text-xl font-bold ${overBudgetCount > 0 ? 'text-red-600' : 'text-gray-900'}`}>
-                {overBudgetCount}
-              </p>
-            </div>
-            <AlertTriangle className={`h-8 w-8 ${overBudgetCount > 0 ? 'text-red-500' : 'text-gray-400'}`} />
-          </div>
-        </Card>
-      </div>
+      <MetricsCards
+        totalAllocated={totalAllocated}
+        totalSpent={totalSpent}
+        activeBudgets={activeBudgets}
+        overBudgetCount={overBudgetCount}
+        formatCurrency={formatCurrency}
+      />
 
-      {/* Table des budgets de projets avec fonctionnalités complètes */}
-      <Card>
-        <CardHeader className="pb-4">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-            <CardTitle>Budgets des Projets ({filteredBudgets.length})</CardTitle>
-            
-            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Rechercher un projet..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full sm:w-64"
-                />
-              </div>
-              
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full sm:w-40">
-                  <SelectValue placeholder="Statut" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tous les statuts</SelectItem>
-                  <SelectItem value="active">Actif</SelectItem>
-                  <SelectItem value="completed">Terminé</SelectItem>
-                  <SelectItem value="on-hold">En Pause</SelectItem>
-                  <SelectItem value="over-budget">Dépassé</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-                <SelectTrigger className="w-full sm:w-40">
-                  <SelectValue placeholder="Priorité" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toutes</SelectItem>
-                  <SelectItem value="high">Haute</SelectItem>
-                  <SelectItem value="medium">Moyenne</SelectItem>
-                  <SelectItem value="low">Basse</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardHeader>
-        
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Projet</TableHead>
-                  <TableHead>Budget Alloué</TableHead>
-                  <TableHead>Dépensé</TableHead>
-                  <TableHead>Restant</TableHead>
-                  <TableHead>Utilisation</TableHead>
-                  <TableHead>Priorité</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Date Fin</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredBudgets.map((budget) => (
-                  <TableRow key={budget.id} className={budget.status === 'over-budget' ? 'bg-red-50' : ''}>
-                    <TableCell className="font-medium">
-                      <div>
-                        <p className="font-semibold">{budget.projectName}</p>
-                        <p className="text-sm text-gray-500">ID: {budget.projectId}</p>
-                        {budget.lastExpenseDate && (
-                          <p className="text-xs text-gray-400">
-                            Dernière dépense: {budget.lastExpenseDate.toLocaleDateString('fr-FR')}
-                          </p>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>{formatCurrency(budget.allocatedAmount)}</TableCell>
-                    <TableCell>{formatCurrency(budget.spentAmount)}</TableCell>
-                    <TableCell className={budget.remainingAmount < 0 ? "text-red-600 font-semibold" : "text-green-600"}>
-                      {formatCurrency(budget.remainingAmount)}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Progress 
-                          value={Math.min(budget.utilizationRate, 100)} 
-                          className="w-16 h-2"
-                          indicatorColor={budget.utilizationRate > 100 ? '#dc2626' : budget.utilizationRate > 80 ? '#f59e0b' : '#10b981'}
-                        />
-                        <span className={`text-xs font-medium ${budget.utilizationRate > 100 ? 'text-red-600' : 'text-gray-600'}`}>
-                          {budget.utilizationRate.toFixed(1)}%
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <PriorityBadge priority={budget.priority} />
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={budget.status} />
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {budget.endDate.toLocaleDateString('fr-FR')}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex gap-1 justify-end">
-                        <Button variant="ghost" size="sm" title="Voir détails">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleEditBudget(budget)} title="Modifier">
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-red-600"
-                          onClick={() => {
-                            setBudgetToDelete(budget.id);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                          title="Supprimer"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            
-            {filteredBudgets.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-gray-500">Aucun budget trouvé avec les filtres actuels</p>
-                <Button variant="outline" className="mt-4" onClick={() => {
-                  setSearchTerm("");
-                  setStatusFilter("all");
-                  setPriorityFilter("all");
-                }}>
-                  Réinitialiser les filtres
-                </Button>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <ProjectBudgetTable
+        projectBudgets={projectBudgets}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter}
+        setPriorityFilter={setPriorityFilter}
+        onEdit={handleEditBudget}
+        onDelete={handleDeleteClick}
+        formatCurrency={formatCurrency}
+      />
 
-      {/* Dialogue de suppression */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -657,7 +355,6 @@ const ManagerBudgetDashboard = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Formulaire de budget projet */}
       <BudgetProjetForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
