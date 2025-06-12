@@ -18,6 +18,7 @@ import Departments from "./pages/Departments";
 import Notifications from "./pages/Notifications";
 import BudgetDepartement from "./pages/BudgetDepartement";
 import BudgetProjet from "./pages/BudgetProjet";
+import GestionBudgetProjet from "./pages/GestionBudgetProjet";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,8 @@ const App = () => (
                   <div className="max-w-7xl mx-auto">
                     <Routes>
                       <Route path="/" element={<Index />} />
+                      <Route path="/manager-budget" element={<ManagerBudgetDashboard />} />
+                      <Route path="/gestion-budget-projet" element={<GestionBudgetProjet />} />
                       <Route path="/budget-departement" element={<BudgetDepartement />} />
                       <Route path="/budget-projet" element={<BudgetProjet />} />
                       <Route path="/budget-management" element={<BudgetManagement />} />
