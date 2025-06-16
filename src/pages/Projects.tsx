@@ -1,9 +1,10 @@
-
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Plus, Pencil, Trash2, Calendar } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import ProjectForm from "@/components/ProjectForm";
 import ProjectStatusBadge from "@/components/ProjectStatusBadge";
@@ -53,6 +54,11 @@ const Projects = () => {
   const [currentProject, setCurrentProject] = useState<ProjectFormData | undefined>();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<number | null>(null);
+  
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [responsibleFilter, setResponsibleFilter] = useState<string>("all");
 
   const handleAddProject = () => {
     setCurrentProject(undefined);
@@ -128,6 +134,27 @@ const Projects = () => {
     return new Date(date).toLocaleDateString();
   };
 
+  // Get unique responsible persons for filter
+  const uniqueResponsibles = Array.from(
+    new Set(projects.map(p => p.responsibleName).filter(Boolean))
+  );
+
+  // Filter projects based on search and filters
+  const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+    const matchesResponsible = responsibleFilter === "all" || project.responsibleName === responsibleFilter;
+    
+    return matchesSearch && matchesStatus && matchesResponsible;
+  });
+
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+    setResponsibleFilter("all");
+  };
+
   return (
     <div className="space-y-8">
       <header className="flex justify-between items-center">
@@ -141,9 +168,62 @@ const Projects = () => {
         </Button>
       </header>
 
+      {/* Filter Section */}
+      <Card className="glass-card">
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Rechercher</label>
+              <Input
+                placeholder="Nom du projet..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Statut</label>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tous les statuts" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les statuts</SelectItem>
+                  <SelectItem value="NotStarted">Non Commencé</SelectItem>
+                  <SelectItem value="InProgress">En Cours</SelectItem>
+                  <SelectItem value="Completed">Terminé</SelectItem>
+                  <SelectItem value="OnHold">En Pause</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Responsable</label>
+              <Select value={responsibleFilter} onValueChange={setResponsibleFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tous les responsables" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les responsables</SelectItem>
+                  {uniqueResponsibles.map((responsible) => (
+                    <SelectItem key={responsible} value={responsible!}>
+                      {responsible}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <Button variant="outline" onClick={clearFilters}>
+              Effacer
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Projets</CardTitle>
+          <CardTitle>Projets ({filteredProjects.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -159,7 +239,7 @@ const Projects = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {projects.map((project) => (
+              {filteredProjects.map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.name}</TableCell>
                   <TableCell>{formatDate(project.startDate)}</TableCell>
@@ -179,6 +259,13 @@ const Projects = () => {
                   </TableCell>
                 </TableRow>
               ))}
+              {filteredProjects.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    Aucun projet trouvé avec les filtres actuels
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
