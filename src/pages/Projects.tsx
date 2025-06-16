@@ -6,6 +6,8 @@ import { Plus, Pencil, Trash2, Calendar } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { toast } from "sonner";
 import ProjectForm from "@/components/ProjectForm";
+import ProjectStatusBadge from "@/components/ProjectStatusBadge";
+import { ProjetStatus } from "@/types/project-status";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,9 +21,9 @@ import {
 
 // Demo data for projects
 const initialProjects = [
-  { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
-  { id: 2, name: "Migration Système", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri" },
-  { id: 3, name: "Étude de Marché", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, responsibleId: "EMP-9012", responsibleName: "Karim Dupont" },
+  { id: 1, name: "Audit Client XYZ 2025", startDate: new Date("2025-03-01"), endDate: new Date("2025-06-30"), budget: 50000, departmentId: 1, responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri", status: 'InProgress' as ProjetStatus },
+  { id: 2, name: "Migration Système", startDate: new Date("2025-01-15"), endDate: new Date("2025-12-31"), budget: 120000, departmentId: 5, responsibleId: "EMP-5678", responsibleName: "Mohamed Nasri", status: 'InProgress' as ProjetStatus },
+  { id: 3, name: "Étude de Marché", startDate: new Date("2025-04-01"), endDate: new Date("2025-07-15"), budget: 35000, departmentId: 4, responsibleId: "EMP-9012", responsibleName: "Karim Dupont", status: 'NotStarted' as ProjetStatus },
 ];
 
 // Demo departments for dropdown selection
@@ -42,6 +44,7 @@ export type ProjectFormData = {
   departmentId: number;
   responsibleId?: string;
   responsibleName?: string;
+  status?: ProjetStatus;
 };
 
 const Projects = () => {
@@ -65,7 +68,8 @@ const Projects = () => {
       budget: project.budget,
       departmentId: project.departmentId,
       responsibleId: project.responsibleId,
-      responsibleName: project.responsibleName
+      responsibleName: project.responsibleName,
+      status: project.status
     });
     setIsFormOpen(true);
   };
@@ -96,7 +100,8 @@ const Projects = () => {
             budget: formData.budget,
             departmentId: formData.departmentId,
             responsibleId: formData.responsibleId,
-            responsibleName: formData.responsibleName
+            responsibleName: formData.responsibleName,
+            status: formData.status || 'NotStarted'
           };
         }
         return project;
@@ -112,7 +117,8 @@ const Projects = () => {
         budget: formData.budget,
         departmentId: formData.departmentId,
         responsibleId: formData.responsibleId || "EMP-0000",
-        responsibleName: formData.responsibleName || "Non Assigné"
+        responsibleName: formData.responsibleName || "Non Assigné",
+        status: formData.status || 'NotStarted'
       }]);
     }
   };
@@ -148,6 +154,7 @@ const Projects = () => {
                 <TableHead>Date de Fin</TableHead>
                 <TableHead>Budget</TableHead>
                 <TableHead>Responsable</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -159,6 +166,9 @@ const Projects = () => {
                   <TableCell>{formatDate(project.endDate)}</TableCell>
                   <TableCell>{project.budget.toLocaleString()} DT</TableCell>
                   <TableCell>{project.responsibleName}</TableCell>
+                  <TableCell>
+                    <ProjectStatusBadge status={project.status} />
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="sm" onClick={() => handleEditProject(project)}>
                       <Pencil className="h-4 w-4" />
