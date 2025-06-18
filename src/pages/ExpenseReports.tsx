@@ -1,8 +1,7 @@
-
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail, CalendarIcon } from "lucide-react";
+import { FileText, CheckCircle, XCircle, Clock, Plus, Filter, Eye, Mail, CalendarIcon, DollarSign, TrendingUp, AlertTriangle } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import ExpenseReportForm, { ExpenseFormData } from "@/components/ExpenseReportForm";
@@ -111,13 +110,13 @@ const expenseReportsData = [
 const statusIcons = {
   approved: <CheckCircle className="h-4 w-4 text-green-500" />,
   rejected: <XCircle className="h-4 w-4 text-red-500" />,
-  pending: <Clock className="h-4 w-4 text-yellow-500" />,
+  pending: <Clock className="h-4 w-4 text-amber-500" />,
 };
 
 const statusColors = {
-  approved: "bg-green-100 text-green-800",
-  rejected: "bg-red-100 text-red-800",
-  pending: "bg-yellow-100 text-yellow-800",
+  approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  rejected: "bg-rose-50 text-rose-700 border-rose-200",
+  pending: "bg-amber-50 text-amber-700 border-amber-200",
 };
 
 const ExpenseReports = () => {
@@ -151,6 +150,7 @@ const ExpenseReports = () => {
   const approvedCount = reports.filter(r => r.status === 'approved').length;
   const pendingCount = reports.filter(r => r.status === 'pending').length;
   const rejectedCount = reports.filter(r => r.status === 'rejected').length;
+  const totalAmount = reports.reduce((sum, r) => sum + r.amount, 0);
   
   const applyFilters = () => {
     let result = [...reports];
@@ -321,193 +321,296 @@ const ExpenseReports = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <header className="flex justify-between items-center">
-        <div>
-          <h1 className="text-4xl font-bold text-primary">Rapports de Dépenses</h1>
-          <p className="text-secondary-foreground">Gérer les rapports de dépenses et les flux d'approbation</p>
-        </div>
-        <Button className="flex items-center gap-2" onClick={() => setIsFormOpen(true)}>
-          <Plus className="h-4 w-4" />
-          Nouveau Rapport de Dépense
-        </Button>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="glass-card p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-100 rounded-full">
-              <FileText className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Total des Rapports</p>
-              <h2 className="text-2xl font-bold">{reports.length}</h2>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="glass-card p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-green-100 rounded-full">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Approuvés</p>
-              <h2 className="text-2xl font-bold">{approvedCount}</h2>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="glass-card p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-yellow-100 rounded-full">
-              <Clock className="h-6 w-6 text-yellow-600" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">En Attente</p>
-              <h2 className="text-2xl font-bold">{pendingCount}</h2>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="glass-card p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-red-100 rounded-full">
-              <XCircle className="h-6 w-6 text-red-600" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Rejetés</p>
-              <h2 className="text-2xl font-bold">{rejectedCount}</h2>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <Card className="glass-card">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Rapports de Dépenses</CardTitle>
-          <div className="flex gap-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Exporter
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-48 bg-white">
-                <div className="grid gap-2">
-                  <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('excel')}>
-                    Format Excel
-                  </Button>
-                  <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('pdf')}>
-                    Format PDF
-                  </Button>
-                  <Button variant="ghost" size="sm" className="justify-start" onClick={() => exportReports('csv')}>
-                    Format CSV
-                  </Button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="space-y-8 p-8">
+        {/* Header Section */}
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200/60 p-8">
+          <div className="flex justify-between items-start">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl">
+                  <FileText className="h-8 w-8 text-white" />
                 </div>
-              </PopoverContent>
-            </Popover>
-            
+                <div>
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                    Gestion des Dépenses
+                  </h1>
+                  <p className="text-slate-600 text-lg">Centralisation et suivi des rapports de dépenses</p>
+                </div>
+              </div>
+            </div>
             <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-2"
-              onClick={() => setFilterModalOpen(true)}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6 py-3 rounded-xl" 
+              onClick={() => setIsFormOpen(true)}
             >
-              <Filter className="h-4 w-4" />
-              Filtrer
+              <Plus className="h-5 w-5 mr-2" />
+              Nouveau Rapport
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID Rapport</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Projet</TableHead>
-                <TableHead>Catégorie</TableHead>
-                <TableHead>Soumis Par</TableHead>
-                <TableHead>Département</TableHead>
-                <TableHead>Montant</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Statut</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredReports.map((report) => (
-                <TableRow key={report.id}>
-                  <TableCell className="font-medium">{report.id}</TableCell>
-                  <TableCell>{report.description}</TableCell>
-                  <TableCell>{report.projectName}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{report.category}</Badge>
-                  </TableCell>
-                  <TableCell>{report.submittedBy}</TableCell>
-                  <TableCell>{report.department}</TableCell>
-                  <TableCell>{report.amount.toLocaleString()} DT</TableCell>
-                  <TableCell>{report.date}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={statusColors[report.status as keyof typeof statusColors]}>
-                      <span className="flex items-center gap-1">
-                        {statusIcons[report.status as keyof typeof statusIcons]}
-                        {report.status === 'approved' ? 'Approuvé' : 
-                         report.status === 'rejected' ? 'Rejeté' : 'En Attente'}
-                      </span>
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      {report.status === 'pending' && (
-                        <>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="flex items-center gap-1 text-green-600 hover:text-green-800" 
-                            onClick={() => approveOrRejectReport(report.id, 'approve')}
-                          >
-                            <CheckCircle className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="flex items-center gap-1 text-red-600 hover:text-red-800" 
-                            onClick={() => approveOrRejectReport(report.id, 'reject')}
-                          >
-                            <XCircle className="h-4 w-4" />
-                          </Button>
-                        </>
-                      )}
-                      <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => viewApprovalWorkflow(report)}>
-                        <Eye className="h-4 w-4" />
+        </div>
+
+        {/* Enhanced Metrics Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="bg-white border-none shadow-lg hover:shadow-xl transition-all duration-200 rounded-2xl overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-600">Total Rapports</p>
+                  <h3 className="text-3xl font-bold text-slate-900">{reports.length}</h3>
+                  <p className="text-xs text-emerald-600 font-medium">+12% ce mois</p>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl">
+                  <FileText className="h-8 w-8 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-none shadow-lg hover:shadow-xl transition-all duration-200 rounded-2xl overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-600">Montant Total</p>
+                  <h3 className="text-3xl font-bold text-slate-900">{totalAmount.toLocaleString()} DT</h3>
+                  <p className="text-xs text-emerald-600 font-medium">+8% ce mois</p>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl">
+                  <DollarSign className="h-8 w-8 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-none shadow-lg hover:shadow-xl transition-all duration-200 rounded-2xl overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-600">En Attente</p>
+                  <h3 className="text-3xl font-bold text-amber-600">{pendingCount}</h3>
+                  <p className="text-xs text-amber-600 font-medium">Nécessite action</p>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl">
+                  <Clock className="h-8 w-8 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-none shadow-lg hover:shadow-xl transition-all duration-200 rounded-2xl overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-slate-600">Taux d'Approbation</p>
+                  <h3 className="text-3xl font-bold text-emerald-600">{Math.round((approvedCount / reports.length) * 100)}%</h3>
+                  <p className="text-xs text-emerald-600 font-medium">+5% ce mois</p>
+                </div>
+                <div className="p-4 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl">
+                  <TrendingUp className="h-8 w-8 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Filter Section */}
+        <Card className="bg-white/80 backdrop-blur-sm border-none shadow-lg rounded-2xl">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-slate-900">Filtres et Recherche</h3>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-slate-300 hover:bg-slate-50 rounded-xl"
+                onClick={() => setFilterModalOpen(true)}
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                Filtres Avancés
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Input
+                placeholder="Rechercher par description..."
+                className="bg-white border-slate-300 rounded-xl"
+              />
+              <Select>
+                <SelectTrigger className="bg-white border-slate-300 rounded-xl">
+                  <SelectValue placeholder="Filtrer par statut" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="all">Tous les statuts</SelectItem>
+                  <SelectItem value="pending">En Attente</SelectItem>
+                  <SelectItem value="approved">Approuvé</SelectItem>
+                  <SelectItem value="rejected">Rejeté</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select>
+                <SelectTrigger className="bg-white border-slate-300 rounded-xl">
+                  <SelectValue placeholder="Filtrer par département" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="all">Tous les départements</SelectItem>
+                  {departments.map(dept => (
+                    <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Enhanced Table */}
+        <Card className="bg-white border-none shadow-xl rounded-2xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-xl font-semibold text-slate-900">
+                Rapports de Dépenses ({filteredReports.length})
+              </CardTitle>
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="rounded-xl border-slate-300 hover:bg-slate-50">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Exporter
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 bg-white border-slate-200 rounded-xl shadow-xl">
+                    <div className="grid gap-2">
+                      <Button variant="ghost" size="sm" className="justify-start rounded-lg" onClick={() => exportReports('excel')}>
+                        Format Excel
                       </Button>
-                      {report.status === 'pending' && (
-                        <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => sendReminderEmail(report.id)}>
-                          <Mail className="h-4 w-4" />
-                        </Button>
-                      )}
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="ghost" size="sm">...</Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-56 bg-white">
-                          <div className="grid gap-2">
-                            <Button variant="ghost" size="sm" className="justify-start">Voir les Détails</Button>
-                            <Button variant="ghost" size="sm" className="justify-start">Télécharger PDF</Button>
-                            <Button variant="ghost" size="sm" className="justify-start">Exporter vers Comptabilité</Button>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
+                      <Button variant="ghost" size="sm" className="justify-start rounded-lg" onClick={() => exportReports('pdf')}>
+                        Format PDF
+                      </Button>
+                      <Button variant="ghost" size="sm" className="justify-start rounded-lg" onClick={() => exportReports('csv')}>
+                        Format CSV
+                      </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-b border-slate-100 bg-slate-50/50">
+                    <TableHead className="font-semibold text-slate-700 py-4">Rapport</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Description</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Projet</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Soumis Par</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Montant</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Statut</TableHead>
+                    <TableHead className="font-semibold text-slate-700 text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredReports.map((report) => (
+                    <TableRow key={report.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                      <TableCell className="py-4">
+                        <div className="space-y-1">
+                          <p className="font-semibold text-slate-900">{report.id}</p>
+                          <p className="text-sm text-slate-500">{report.date}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <p className="font-medium text-slate-900">{report.description}</p>
+                          <Badge variant="outline" className="text-xs border-slate-300 text-slate-600">
+                            {report.category}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <p className="font-medium text-slate-900">{report.projectName}</p>
+                          <p className="text-sm text-slate-500">{report.department}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <p className="font-medium text-slate-900">{report.submittedBy}</p>
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <p className="font-bold text-lg text-slate-900">{report.amount.toLocaleString()} DT</p>
+                          {report.attachments > 0 && (
+                            <p className="text-xs text-slate-500">{report.attachments} pièce(s) jointe(s)</p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant="outline" 
+                          className={`${statusColors[report.status as keyof typeof statusColors]} border font-medium`}
+                        >
+                          <span className="flex items-center gap-1.5">
+                            {statusIcons[report.status as keyof typeof statusIcons]}
+                            {report.status === 'approved' ? 'Approuvé' : 
+                             report.status === 'rejected' ? 'Rejeté' : 'En Attente'}
+                          </span>
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          {report.status === 'pending' && (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg"
+                                onClick={() => approveOrRejectReport(report.id, 'approve')}
+                              >
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg"
+                                onClick={() => approveOrRejectReport(report.id, 'reject')}
+                              >
+                                <XCircle className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg"
+                            onClick={() => viewApprovalWorkflow(report)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          {report.status === 'pending' && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg"
+                              onClick={() => sendReminderEmail(report.id)}
+                            >
+                              <Mail className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {filteredReports.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-12">
+                        <div className="space-y-3">
+                          <AlertTriangle className="h-12 w-12 text-slate-400 mx-auto" />
+                          <p className="text-slate-500 text-lg">Aucun rapport trouvé</p>
+                          <p className="text-slate-400">Essayez d'ajuster vos filtres de recherche</p>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Expense Report Form Modal */}
       <ExpenseReportForm 
