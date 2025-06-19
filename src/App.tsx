@@ -15,6 +15,7 @@ import FinancialDashboards from "./pages/FinancialDashboards";
 import AccessControl from "./pages/AccessControl";
 import Projects from "./pages/Projects";
 import Departments from "./pages/Departments";
+import Missions from "./pages/Missions";
 import Notifications from "./pages/Notifications";
 import BudgetDepartement from "./pages/BudgetDepartement";
 import BudgetProjet from "./pages/BudgetProjet";
@@ -77,6 +78,7 @@ const App = () => (
                       <Route path="/access-control" element={<AccessControl />} />
                       <Route path="/projects" element={<Projects />} />
                       <Route path="/departments" element={<Departments />} />
+                      <Route path="/missions" element={<Missions />} />
                       <Route path="/notifications" element={<Notifications />} />
                     </Routes>
                   </div>
