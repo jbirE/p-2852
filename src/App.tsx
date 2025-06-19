@@ -16,6 +16,7 @@ import AccessControl from "./pages/AccessControl";
 import Projects from "./pages/Projects";
 import Departments from "./pages/Departments";
 import Missions from "./pages/Missions";
+import RevenusMissions from "./pages/RevenusMissions";
 import Notifications from "./pages/Notifications";
 import BudgetDepartement from "./pages/BudgetDepartement";
 import BudgetProjet from "./pages/BudgetProjet";
@@ -79,6 +80,7 @@ const App = () => (
                       <Route path="/projects" element={<Projects />} />
                       <Route path="/departments" element={<Departments />} />
                       <Route path="/missions" element={<Missions />} />
+                      <Route path="/revenus-missions" element={<RevenusMissions />} />
                       <Route path="/notifications" element={<Notifications />} />
                     </Routes>
                   </div>
