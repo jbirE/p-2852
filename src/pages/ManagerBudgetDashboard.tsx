@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
@@ -19,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import BudgetProjetForm from "@/components/BudgetProjetForm";
 import { BudgetProjetFormData } from "@/pages/BudgetProjet";
+import { ProjectBudget } from "@/components/manager-budget/ProjectBudgetTable";
 import { 
   Plus, 
   RefreshCw, 
